@@ -1,0 +1,27 @@
+{
+  "name": "architect-excel",
+  "version": "1.0.0",
+  "description": "Excel plugin to access Architect backend via the Typescript API https://github.com/architect-xyz/architect-ts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/architect-xyz/architect-excel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/architect-xyz/architect-excel/issues"
+  },
+  "homepage": "https://github.com/architect-xyz/architect-excel#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
+  }
+}
