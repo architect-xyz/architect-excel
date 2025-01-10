@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     entry: './src/architect-excel.ts',
     output: {
-        filename: 'taskpane.js',
+        filename: 'architect-excel.js',
         path: path.resolve(__dirname, 'public')
     },
     resolve: {

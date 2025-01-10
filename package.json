@@ -12,16 +12,23 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/architect-xyz/architect-excel/issues"
   },
+  "license": "Apache-2.0",
   "homepage": "https://github.com/architect-xyz/architect-excel#readme",
   "devDependencies": {
+    "@types/office-js": "^1.0",
     "http-server": "^14.1.1",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.2",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@afintech/sdk": "^0.1.1",
+    "@microsoft/office-js": "^1.1",
+    "generator-office": "^2.0.3",
+    "yo": "^5.1.0"
   }
 }
