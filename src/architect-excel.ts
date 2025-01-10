@@ -29,6 +29,22 @@ let client: Client;
 
 
 /**
+ * Uses the saved API key/secret for a custom function.
+ * @customfunction
+ */
+export async function fetchData(): Promise<string> {
+  const apiKey = await OfficeRuntime.storage.getItem("apiKey");
+  const apiSecret = await OfficeRuntime.storage.getItem("apiSecret");
+
+  if (!apiKey || !apiSecret) {
+    throw new Error("API key or secret not set. Use the ribbon to configure them.");
+  }
+
+  // Example usage with the API
+  return `Using API Key: ${apiKey}, Secret: ${apiSecret}`;
+}
+
+/**
  * Initialize the client with user-provided API key and secret
  * @customfunction
  * @param sheetName Name of the worksheet containing API credentials
