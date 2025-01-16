@@ -1,9 +1,9 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/architect-excel.ts',
+    entry: './src/functions.ts',
     output: {
-        filename: 'architect-excel.js',
+        filename: 'functions-excel.js',
         path: path.resolve(__dirname, 'docs')
     },
     resolve: {
