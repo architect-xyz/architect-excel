@@ -14,5 +14,14 @@ The `src/architect-excel.ts` is the main file
 This gets compiled into `public/taskpane.js`
 
 
+### Adding Functions
+
+One must add functions to:
+- manifest.xml
+- architect-excel.ts
+- functions.json
+
+
+
 ## Lower Latency
 For clients needing a lower latency plugin in C#, please contact support@architect.co

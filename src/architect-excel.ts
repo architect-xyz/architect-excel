@@ -33,8 +33,8 @@ let client: Client;
  * @customfunction
  */
 export async function fetchData(): Promise<string> {
-  const apiKey = await OfficeRuntime.storage.getItem("apiKey");
-  const apiSecret = await OfficeRuntime.storage.getItem("apiSecret");
+  const apiKey = Office.context.document.settings.get('apiKey');
+  const apiSecret = Office.context.document.settings.get('apiSecret');
 
   if (!apiKey || !apiSecret) {
     throw new Error("API key or secret not set. Use the ribbon to configure them.");

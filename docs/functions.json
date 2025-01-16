@@ -1,0 +1,18 @@
+{
+    "functions": [
+      {
+        "id": "getMarketMid",
+        "name": "getMarketMid",
+        "description": "Gets market mid for a given symbol.",
+        "parameters": [
+          {
+            "name": "symbol",
+            "description": "Stock or market data symbol.",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
+    ]
+  }
+  

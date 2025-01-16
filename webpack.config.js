@@ -4,7 +4,7 @@ module.exports = {
     entry: './src/architect-excel.ts',
     output: {
         filename: 'architect-excel.js',
-        path: path.resolve(__dirname, 'public')
+        path: path.resolve(__dirname, 'docs')
     },
     resolve: {
         extensions: ['.ts', '.js']
