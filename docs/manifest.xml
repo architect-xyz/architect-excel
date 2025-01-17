@@ -10,7 +10,7 @@
   <HighResolutionIconUrl DefaultValue="https://silver-disco-39kygry.pages.github.io/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://www.architect.co"/>
   <AppDomains>
-    <AppDomain>"https://architect.co"</AppDomain>
+    <AppDomain>"https://www.architect.co"</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
@@ -94,7 +94,7 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://silver-disco-39kygry.pages.github.io/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="Functions.Namespace" DefaultValue="CONTOSO"/>
+        <bt:String id="Functions.Namespace" DefaultValue="Architect"/>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>

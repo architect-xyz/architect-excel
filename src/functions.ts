@@ -47,56 +47,43 @@ export async function fetchData(): Promise<string> {
 /**
  * Initialize the client with user-provided API key and secret
  * @customfunction
- * @param sheetName Name of the worksheet containing API credentials
  */
-async function initializeClient(sheetName: string) {
-  await Excel.run(async (context) => {
-    const workbook = context.workbook;
-    let worksheet = workbook.worksheets.getItemOrNullObject(sheetName);
-    await context.sync();
+export function initializeClient() {
+  const apiKey = Office.context.document.settings.get('apiKey');
+  const apiSecret = Office.context.document.settings.get('apiSecret');
 
-    // Create API Config worksheet if it doesn't exist
-    if (worksheet.isNullObject) {
-      worksheet = workbook.worksheets.add(sheetName);
-      worksheet.getRange('A1').values = [['API_KEY:']];
-      worksheet.getRange('B1').values = [['']];
-      worksheet.getRange('A2').values = [['API_SECRET:']];
-      worksheet.getRange('B2').values = [['']];
-      console.log(`Created ${sheetName} worksheet. Please fill in your API key and secret.`);
-      await context.sync();
-      return;
-    }
+  if (!apiKey || !apiSecret) {
+    throw new Error('API Key and Secret must be provided.');
+  }
 
-    const apiKey = worksheet.getRange('B1').values[0][0] as string;
-    const apiSecret = worksheet.getRange('B2').values[0][0] as string;
-
-    if (!apiKey || !apiSecret) {
-      throw new Error('API Key and Secret must be provided in cells B1 and B2.');
-    }
-
-    config.apiKey = apiKey;
-    config.apiSecret = apiSecret;
-    client = create(config);
-  });
+  config.apiKey = apiKey;
+  config.apiSecret = apiSecret;
+  client = create(config);
 }
 
 /**
  * Fetch market snapshot and populate Excel worksheet
  * @param market Market identifier
  */
-async function fetchMarketSnapshot(market: string) {
+async function fetchMarketSnapshot(market: string): Promise<number | undefined> {
   try {
     const snapshot = await client.marketSnapshot([], market);
 
-    if (!snapshot) {
-      console.error('No snapshot data received');
-      return;
+    if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
+      console.error('Invalid or missing snapshot data');
+      return NaN;
     }
-  }
-  catch (error) {
+
+    const bid = parseFloat(snapshot.bidPrice);
+    const ask = parseFloat(snapshot.askPrice);
+
+    return isNaN(bid) || isNaN(ask) ? NaN : (bid + ask) / 2;
+  } catch (error) {
     console.error('Error fetching market snapshot:', error);
+    return undefined;
   }
 }
+
 
 /**
  * Main function to initialize and execute the plugin
@@ -105,7 +92,7 @@ async function main() {
   try {
     const sheetName = 'ARCHITECT_CONFIG';
     const market = 'MES 20250321 CME Future/USD*CME/CQG';
-    await initializeClient(sheetName);
+    await initializeClient();
     await fetchMarketSnapshot(market);
   } catch (error) {
     console.error('Error in main:', error);
@@ -116,7 +103,7 @@ async function main() {
 Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
     console.log('Excel Add-in ready.');
-    main();
+    // main();
   }
 });
 export { fetchMarketSnapshot };

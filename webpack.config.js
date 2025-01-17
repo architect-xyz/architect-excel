@@ -1,9 +1,12 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/functions.ts',
+    entry: {
+        functions: './src/functions.ts',
+        taskpane: './src/taskpane.ts'
+    },
     output: {
-        filename: 'functions-excel.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'docs')
     },
     resolve: {
@@ -18,5 +21,5 @@ module.exports = {
             }
         ]
     },
-    mode: 'development'
+    mode: 'production'
 };
