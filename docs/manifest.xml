@@ -6,8 +6,8 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="architect-excel"/>
   <Description DefaultValue="Fetch and stream market data via the Architect API."/>
-  <IconUrl DefaultValue="https://silver-disco-39kygry.pages.github.io/assets/icon-32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://silver-disco-39kygry.pages.github.io/assets/icon-64.png"/>
+  <IconUrl DefaultValue="https://architext-xyz.github.io/architect-excel/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://architext-xyz.github.io/architect-excel/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://www.architect.co"/>
   <AppDomains>
     <AppDomain>"https://www.architect.co"</AppDomain>
@@ -21,7 +21,7 @@
     </Sets>
   </Requirements>
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://silver-disco-39kygry.pages.github.io/taskpane.html"/>
+    <SourceLocation DefaultValue="https://architext-xyz.github.io/architect-excel/taskpane.html"/>
   </DefaultSettings>
   <Permissions>ReadWriteDocument</Permissions>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
@@ -81,26 +81,26 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://silver-disco-39kygry.pages.github.io/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://silver-disco-39kygry.pages.github.io/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://silver-disco-39kygry.pages.github.io/assets/icon-80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://architext-xyz.github.io/architect-excel/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://architext-xyz.github.io/architect-excel/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://architext-xyz.github.io/architect-excel/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://silver-disco-39kygry.pages.github.io/public/functions.js"/>
-        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://silver-disco-39kygry.pages.github.io/public/functions.json"/>
-        <bt:Url id="Functions.Page.Url" DefaultValue="https://silver-disco-39kygry.pages.github.io/public/functions.html"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://architext-xyz.github.io/architect-excel/public/functions.js"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://architext-xyz.github.io/architect-excel/public/functions.json"/>
+        <bt:Url id="Functions.Page.Url" DefaultValue="https://architext-xyz.github.io/architect-excel/public/functions.html"/>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://silver-disco-39kygry.pages.github.io/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://silver-disco-39kygry.pages.github.io/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://architext-xyz.github.io/architect-excel/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://architext-xyz.github.io/architect-excel/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="Architect"/>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with the Architect Excel add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
+        <bt:String id="GetStarted.Description" DefaultValue="The Architect Excel add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Task Pane"/>
       </bt:LongStrings>
     </Resources>

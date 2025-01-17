@@ -6,7 +6,7 @@
         "description": "Gets market mid for a given symbol.",
         "parameters": [
           {
-            "name": "symbol",
+            "name": "market",
             "description": "Stock or market data symbol.",
             "type": "string",
             "required": true

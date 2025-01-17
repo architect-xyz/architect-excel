@@ -65,7 +65,7 @@ export function initializeClient() {
  * Fetch market snapshot and populate Excel worksheet
  * @param market Market identifier
  */
-async function fetchMarketSnapshot(market: string): Promise<number | undefined> {
+async function getMarketMid(market: string): Promise<number | undefined> {
   try {
     const snapshot = await client.marketSnapshot([], market);
 
