@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             Office.context.document.settings.saveAsync();
 
             status!.textContent = 'Credentials saved!';
+            console.log("A")
         } catch (err) {
             status!.textContent = `Error: ${(err as Error).message}`;
         }
