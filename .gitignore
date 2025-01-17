@@ -39,10 +39,6 @@ yarn-error.log*
 *.tmp
 *.temp
 
-# Deployment files
-manifest.xml
-manifest.prod.xml
-
 # OS-specific files
 .DS_Store
 Thumbs.db
