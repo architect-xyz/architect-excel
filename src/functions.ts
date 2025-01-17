@@ -92,8 +92,7 @@ async function main() {
   try {
     const sheetName = 'ARCHITECT_CONFIG';
     const market = 'MES 20250321 CME Future/USD*CME/CQG';
-    await initializeClient();
-    await fetchMarketSnapshot(market);
+    await getMarketMid(market);
   } catch (error) {
     console.error('Error in main:', error);
   }
@@ -106,4 +105,4 @@ Office.onReady((info) => {
     // main();
   }
 });
-export { fetchMarketSnapshot };
+export { getMarketMid };
