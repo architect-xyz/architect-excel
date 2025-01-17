@@ -1,4 +1,4 @@
-import { initializeClient } from './functions';
+// import { initializeClient } from './functions';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('api-form');
@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             Office.context.document.settings.saveAsync();
 
             status!.textContent = 'Credentials saved!';
-            initializeClient();
         } catch (err) {
             status!.textContent = `Error: ${(err as Error).message}`;
         }
