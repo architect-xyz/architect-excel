@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "checkJs": true,
     "baseUrl": ".",
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "experimentalDecorators": true,
+    "experimentalDecorators": false,
     "jsx": "react",
     "outDir": "lib",
     "sourceMap": true,
     "target": "es5",
+    "module": "preserve",
     "lib": [
       "es2015",
       "dom"
@@ -19,9 +21,10 @@
     "node_modules",
     "dist",
     "lib",
-    "lib-amd"
+    "lib-amd",
+    "docs"
   ],
-  "ts-node": { 
-    "files": true 
+  "ts-node": {
+    "files": true
   }
 }
