@@ -30,15 +30,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@afintech/sdk@file:../architect-js/afintech-sdk-0.1.2.tgz::locator=architect-excel%40workspace%3A.":
+"@afintech/sdk@npm:0.1.2":
   version: 0.1.2
-  resolution: "@afintech/sdk@file:../architect-js/afintech-sdk-0.1.2.tgz::locator=architect-excel%40workspace%3A."
+  resolution: "@afintech/sdk@npm:0.1.2"
   dependencies:
     "@graphql-typed-document-node/core": ^3.2.0
     "@grpc/grpc-js": ^1.12.2
     gql.tada: ^1.8.10
     graphql-http: ^1.22.1
-  checksum: 6c3b0398e141ef1e915f43a57e9078464368b77f156a3e21fc2f77df2e95e2b5977ee6213a7ef4765d53975c6eccb679466406e4f5f78527ec0a8a3076b02543
+  checksum: 6db199de00f0b157b44802a55a50c103bbd239b9b62e1d47a2eecd89b24305aefef979db66776aca56cec9e6c7d2e63e176bae12be0b2df20fbff381f8b3391a
   languageName: node
   linkType: hard
 
@@ -1603,7 +1603,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "architect-excel@workspace:."
   dependencies:
-    "@afintech/sdk": "file:../architect-js/afintech-sdk-0.1.2.tgz"
+    "@afintech/sdk": 0.1.2
     "@microsoft/office-js": ^1.1
     "@types/office-js": ^1.0
     generator-office: ^2.0.3
