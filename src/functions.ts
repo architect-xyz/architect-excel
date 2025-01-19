@@ -14,8 +14,7 @@ day low
 */
 
 /// <reference types="office-js" />
-import { create } from '@afintech/sdk';
-import type {Config, Client} from '@afintech/sdk/dist/esm/sdk';
+import { create, type Config, type Client } from '@afintech/sdk/env/browser';
 
 
 let config: Config = {
