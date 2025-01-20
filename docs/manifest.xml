@@ -86,9 +86,9 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://architect-xyz.github.io/architect-excel/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Functions.Script.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/public/functions.js"/>
-        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/public/functions.json"/>
-        <bt:Url id="Functions.Page.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/public/functions.html"/>
+        <bt:Url id="Functions.Script.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/functions.js"/>
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/functions.json"/>
+        <bt:Url id="Functions.Page.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/functions.html"/>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
         <bt:Url id="Commands.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://architect-xyz.github.io/architect-excel/taskpane.html"/>
