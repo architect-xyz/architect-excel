@@ -3,7 +3,7 @@ import { initializeClient } from "./functions";
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('api-form') as HTMLFormElement;
 
-  function cleanField(field: FormDataEntryValue | null) {
+  function cleanField(field: FormDataEntryValue | null)  : string {
     return ((field as string) || '').trim();
   }
 

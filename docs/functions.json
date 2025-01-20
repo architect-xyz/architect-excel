@@ -11,7 +11,7 @@
             "description": "Stock or market data symbol.",
             "type": "string",
             "required": true
-          },
+          }
         ]
       },
       {
