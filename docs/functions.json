@@ -25,6 +25,12 @@
         "description": "Returns a simple filterMarket on MES.",
         "parameters": []
       }
+      {
+        "id": "testFunction",
+        "name": "testFunction",
+        "description": "Returns Hello World!",
+        "parameters": []
+      }
     ]
   }
   

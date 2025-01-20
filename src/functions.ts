@@ -74,6 +74,10 @@ async function getMarketMid(market: string): Promise<number | undefined> {
   }
 }
 
+function testFunction(): string {
+  return "Hello World!";
+}
+
 function testAPI(): string {
   const apiKey = localStorage.getItem('ArchitectApiKey');
   return apiKey ?? "No Key";
@@ -100,4 +104,4 @@ async function testClient(): Promise<string> {
 }
 
 
-export { getMarketMid, testAPI, testClient };
+export { getMarketMid, testFunction, testAPI, testClient };
