@@ -4,7 +4,10 @@
         "id": "getMarketMid",
         "name": "getMarketMid",
         "description": "Gets market mid for a given symbol.",
-        "resultType": "number",
+        "result": {
+          "type": "number",
+          "dimensionality": "scalar"
+        },
         "parameters": [
           {
             "name": "market",
@@ -18,21 +21,30 @@
         "id": "testAPI",
         "name": "testAPI",
         "description": "Returns API string.",
-        "resultType": "string",
+        "result": {
+          "type": "string",
+          "dimensionality": "scalar"
+        },
         "parameters": []
       },
       {
         "id": "testClient",
         "name": "testClient",
         "description": "Returns a simple filterMarket on MES.",
-        "resultType": "string",
+        "result": {
+          "type": "string",
+          "dimensionality": "scalar"
+        },
         "parameters": []
       },
       {
         "id": "testFunction",
         "name": "testFunction",
         "description": "Returns Hello World!",
-        "resultType": "string",
+        "result": {
+          "type": "string",
+          "dimensionality": "scalar"
+        },
         "parameters": []
       }
     ]
