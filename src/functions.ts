@@ -24,7 +24,7 @@ let config: Config = {
   tradingMode: 'live',
 };
 
-let client: Client;
+let client: Client | null = null;
 
 /**
  * Initialize the client with user-provided API key and secret
@@ -43,12 +43,21 @@ export function initializeClient() {
   client = create(config);
 }
 
+function clientCheck(): Client{
+  if (!client) {
+    throw new Error('Client is not initialized.');
+  }
+  return client
+}
+
 /**
  * Fetch market snapshot and populate Excel worksheet
  * @param market Market identifier
  */
 async function getMarketMid(market: string): Promise<number | undefined> {
   try {
+    client = clientCheck();
+
     const snapshot = await client.marketSnapshot([], market);
 
     if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {

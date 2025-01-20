@@ -1,4 +1,4 @@
-import { initializeClient } from "./functions.mjs";
+import { initializeClient } from "./functions";
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('api-form');

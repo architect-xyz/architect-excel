@@ -2,8 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        functions: './src/functions.mts',
-        taskpane: './src/taskpane.mts'
+        taskpane: './src/taskpane.ts'
     },
     output: {
         filename: '[name].js',
@@ -15,15 +14,15 @@ module.exports = {
         globalObject: 'this',
     },
     resolve: {
-        extensions: ['.ts', '.js', '.mts'],
+        extensions: ['.ts', '.js'],
     },
     module: {
         rules: [
-            {
-                test: /\.mts$/,
+             {
+                test: /\.ts$/,
                 use: 'ts-loader',
                 exclude: /node_modules/
-            }
+            },
         ]
     },
     mode: 'production',
