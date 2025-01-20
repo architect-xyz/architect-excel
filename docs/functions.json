@@ -12,6 +12,18 @@
             "required": true
           }
         ]
+      },
+      {
+        "id": "testAPI",
+        "name": "testAPI",
+        "description": "Returns API string.",
+        "parameters": []
+      },
+      {
+        "id": "testClient",
+        "name": "testClient",
+        "description": "Returns a simple filterMarket on MES.",
+        "parameters": []
       }
     ]
   }

@@ -56,7 +56,7 @@ function clientCheck(): Client{
  */
 async function getMarketMid(market: string): Promise<number | undefined> {
   try {
-    client = clientCheck();
+    const client = clientCheck();
 
     const snapshot = await client.marketSnapshot([], market);
 
@@ -75,25 +75,32 @@ async function getMarketMid(market: string): Promise<number | undefined> {
   }
 }
 
-
-/**
- * Main function to initialize and execute the plugin
- */
-async function main() {
-  try {
-    const sheetName = 'ARCHITECT_CONFIG';
-    const market = 'MES 20250321 CME Future/USD*CME/CQG';
-    await getMarketMid(market);
-  } catch (error) {
-    console.error('Error in main:', error);
-  }
+function testAPI(): string {
+  const apiKey = localStorage.getItem('ArchitectApiKey');
+  return apiKey ?? "No Key";
 }
 
-// Entry point for the Office Add-in
-Office.onReady((info) => {
-  if (info.host === Office.HostType.Excel) {
-    console.log('Excel Add-in ready.');
-    // main();
-  }
-});
-export { getMarketMid };
+async function testClient(): Promise<string> {
+  const client = clientCheck();
+
+  const market_name = 'MES 20250321 CME Future/USD*CME/CQG';
+
+  const snapshot = await client.filterMarkets([], {
+    venue: 'CME',
+    base: 'MES',
+    quote: '',
+    underlying: '',
+    maxResults: 1,
+    resultsOffset: 0,
+    searchString: '',
+    onlyFavorites: false,
+    sortByVolumeDesc: true,
+  });
+
+  const market = snapshot[0].exchangeSymbol;
+
+  return market;
+}
+
+
+export { getMarketMid , testAPI, testClient};
