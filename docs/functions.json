@@ -24,7 +24,7 @@
         "name": "testClient",
         "description": "Returns a simple filterMarket on MES.",
         "parameters": []
-      }
+      },
       {
         "id": "testFunction",
         "name": "testFunction",
