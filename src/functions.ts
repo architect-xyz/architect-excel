@@ -24,7 +24,15 @@ let config: Config = {
   tradingMode: 'live',
 };
 
-let client: Client | null = null;
+
+let client: Client = (new Proxy({}, {
+  get(_obj, _prop) {
+    throw new Error('Client is not initialized');
+  },
+  set(_obj, _prop, _value) {
+    throw new Error('Client is not initialized');
+  }
+}) as Client);
 
 /**
  * Initialize the client with user-provided API key and secret
@@ -43,21 +51,12 @@ export function initializeClient() {
   client = create(config);
 }
 
-function clientCheck(): Client{
-  if (!client) {
-    throw new Error('Client is not initialized.');
-  }
-  return client
-}
-
 /**
  * Fetch market snapshot and populate Excel worksheet
  * @param market Market identifier
  */
 async function getMarketMid(market: string): Promise<number | undefined> {
   try {
-    const client = clientCheck();
-
     const snapshot = await client.marketSnapshot([], market);
 
     if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
@@ -81,8 +80,6 @@ function testAPI(): string {
 }
 
 async function testClient(): Promise<string> {
-  const client = clientCheck();
-
   const market_name = 'MES 20250321 CME Future/USD*CME/CQG';
 
   const snapshot = await client.filterMarkets([], {
@@ -103,4 +100,4 @@ async function testClient(): Promise<string> {
 }
 
 
-export { getMarketMid , testAPI, testClient};
+export { getMarketMid, testAPI, testClient };
