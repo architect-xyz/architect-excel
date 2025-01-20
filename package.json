@@ -26,7 +26,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@afintech/sdk": "^0.1.1",
+    "@afintech/sdk": "0.1.2",
     "@microsoft/office-js": "^1.1",
     "generator-office": "^2.0.3",
     "yo": "^5.1.0"
