@@ -26,30 +26,13 @@ let config: Config = {
 
 let client: Client;
 
-
-/**
- * Uses the saved API key/secret for a custom function.
- * @customfunction
- */
-export async function fetchData(): Promise<string> {
-  const apiKey = Office.context.document.settings.get('apiKey');
-  const apiSecret = Office.context.document.settings.get('apiSecret');
-
-  if (!apiKey || !apiSecret) {
-    throw new Error("API key or secret not set. Use the ribbon to configure them.");
-  }
-
-  // Example usage with the API
-  return `Using API Key: ${apiKey}, Secret: ${apiSecret}`;
-}
-
 /**
  * Initialize the client with user-provided API key and secret
  * @customfunction
  */
 export function initializeClient() {
-  const apiKey = Office.context.document.settings.get('apiKey');
-  const apiSecret = Office.context.document.settings.get('apiSecret');
+  const apiKey = localStorage.getItem('ArchitectApiKey');
+  const apiSecret = localStorage.getItem('ArchitectApiSecret');
 
   if (!apiKey || !apiSecret) {
     throw new Error('API Key and Secret must be provided.');

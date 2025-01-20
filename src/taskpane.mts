@@ -1,3 +1,5 @@
+import { initializeClient } from "./functions.mjs";
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('api-form');
   form?.addEventListener('submit', async (e) => {
@@ -16,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('ArchitectApiKey', apiKey);
       localStorage.setItem('ArchitectApiSecret', apiSecret);
       status!.textContent = 'Credentials saved!';
+      initializeClient();
     } catch (err) {
       status!.textContent = `Error: ${(err as Error).message}`;
     }
