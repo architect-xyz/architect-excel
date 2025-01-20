@@ -33,7 +33,6 @@
   "dependencies": {
     "@afintech/sdk": "0.1.2",
     "@microsoft/office-js": "^1.1",
-    "generator-office": "^2.0",
     "office-js": "^0.1.0"
   }
 }
