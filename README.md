@@ -10,10 +10,6 @@ https://github.com/architect-xyz/architect-ts
 npx webpack
 ```
 
-The `src/architect-excel.ts` is the main file
-This gets compiled into `public/taskpane.js`
-
-
 ### Adding Functions
 
 One must add functions to:

@@ -4,8 +4,6 @@ package-lock.json
 
 # Build output
 dist/
-public/taskpane.js
-public/taskpane.js.map
 
 # TypeScript temporary files
 *.tsbuildinfo
