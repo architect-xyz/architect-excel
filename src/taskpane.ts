@@ -1,6 +1,14 @@
 import { initializeClient } from "./functions";
 
 document.addEventListener('DOMContentLoaded', () => {
+  try {
+    initializeClient();
+    const status = document.getElementById('status')!;
+    status.textContent = 'Architect has authenticated'
+  } catch {
+    // Do nothing in error case
+  }
+
   const form = document.getElementById('api-form');
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
