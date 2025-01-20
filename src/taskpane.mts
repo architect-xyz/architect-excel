@@ -1,5 +1,3 @@
-import { initializeClient } from "./functions";
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('api-form');
   form?.addEventListener('submit', async (e) => {
@@ -15,13 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      Office.context.document.settings.set('apiKey', apiKey);
-      Office.context.document.settings.set('apiSecret', apiSecret);
-      Office.context.document.settings.saveAsync();
-
+      localStorage.setItem('ArchitectApiKey', apiKey);
+      localStorage.setItem('ArchitectApiSecret', apiSecret);
       status!.textContent = 'Credentials saved!';
-      initializeClient()
-      console.log("A")
     } catch (err) {
       status!.textContent = `Error: ${(err as Error).message}`;
     }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "esnext",
     "allowJs": true,
     "checkJs": true,
@@ -11,15 +11,22 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": false,
     "jsx": "react",
+    "resolveJsonModule": true,
     "outDir": "./docs",
     "sourceMap": true,
-    "target": "es5",
-    "module": "preserve",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
     "lib": [
       "esnext",
       "dom"
     ]
   },
+  "include": [
+    "src/*.mts",
+    "src/*.ts",
+  ],
   "exclude": [
     "node_modules",
     "dist",
