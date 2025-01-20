@@ -8,9 +8,14 @@ module.exports = {
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'docs'),
+        library: {
+            name: '[name]',
+            type: 'umd',
+        },
+        globalObject: 'this',
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: ['.ts', '.js'],
     },
     module: {
         rules: [
@@ -21,5 +26,8 @@ module.exports = {
             }
         ]
     },
-    mode: 'production'
+    mode: 'production',
+    optimization: {
+        minimize: true
+    }
 };

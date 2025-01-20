@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "esnext",
     "allowJs": true,
     "checkJs": true,
     "baseUrl": ".",
@@ -8,12 +11,12 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": false,
     "jsx": "react",
-    "outDir": "lib",
+    "outDir": "./docs",
     "sourceMap": true,
     "target": "es5",
     "module": "preserve",
     "lib": [
-      "es2015",
+      "esnext",
       "dom"
     ]
   },
@@ -22,7 +25,8 @@
     "dist",
     "lib",
     "lib-amd",
-    "docs"
+    "docs",
+    "webpack.config.js"
   ],
   "ts-node": {
     "files": true
