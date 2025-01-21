@@ -2,7 +2,8 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        taskpane: './src/taskpane.ts'
+        taskpane: './src/taskpane.ts',
+        functions: './src/functions.ts'
     },
     output: {
         filename: '[name].js',
