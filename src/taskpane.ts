@@ -1,4 +1,4 @@
-import { initializeClient } from "./functions";
+import { initializeClient, setStorageItem } from "./functions";
 
 Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement;
@@ -21,8 +21,8 @@ Office.onReady(() => {
     }
 
     try {
-      localStorage.setItem('ArchitectApiKey', apiKey);
-      localStorage.setItem('ArchitectApiSecret', apiSecret);
+      setStorageItem('ArchitectApiKey', apiKey);
+      setStorageItem('ArchitectApiSecret', apiSecret);
       status.textContent = 'Credentials saved!';
       initializeClient();
     } catch (err) {

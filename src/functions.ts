@@ -13,6 +13,7 @@ day high
 day low
 */
 
+/// <reference types="office-runtime" />
 /// <reference types="office-js" />
 import { create, type Config, type Client } from '@afintech/sdk/env/browser';
 
@@ -39,12 +40,35 @@ let client: Client = (new Proxy({}, {
 console.log("loading 3")
 
 /**
+ * Helper function to set an item in storage
+ */
+export async function setStorageItem(key: string, value: string): Promise<void> {
+  if (typeof Office !== 'undefined' && Office.context) {
+    await OfficeRuntime.storage.setItem(key, value);
+  } else {
+    localStorage.setItem(key, value);
+  }
+}
+
+/**
+ * Helper function to get an item from storage
+ */
+export async function getStorageItem(key: string): Promise<string | null> {
+  if (typeof Office !== 'undefined' && Office.context) {
+    return await OfficeRuntime.storage.getItem(key);
+  } else {
+    return localStorage.getItem(key);
+  }
+}
+
+
+/**
  * Initialize the client with user-provided API key and secret
  * @customfunction
  */
-export function initializeClient() {
-  const apiKey = localStorage.getItem('ArchitectApiKey');
-  const apiSecret = localStorage.getItem('ArchitectApiSecret');
+export async function initializeClient() {
+  const apiKey = await getStorageItem('ArchitectApiKey');
+  const apiSecret = await getStorageItem('ArchitectApiSecret');
 
   if (!apiKey || !apiSecret) {
     throw new Error('API Key and Secret must be provided.');
