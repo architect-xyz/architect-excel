@@ -1,6 +1,6 @@
 import { initializeClient } from "./functions";
 
-document.addEventListener('DOMContentLoaded', () => {
+Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement;
 
   function cleanField(field: FormDataEntryValue | null)  : string {
