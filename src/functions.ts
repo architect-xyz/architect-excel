@@ -44,7 +44,11 @@ console.log("loading 3")
  */
 export async function setStorageItem(key: string, value: string): Promise<void> {
   if (typeof Office !== 'undefined' && Office.context) {
-    await OfficeRuntime.storage.setItem(key, value);
+    try {
+      await OfficeRuntime.storage.setItem(key, value);
+    } catch (error) {
+      console.error('Error setting storage item:', error);
+    }
   } else {
     localStorage.setItem(key, value);
   }
