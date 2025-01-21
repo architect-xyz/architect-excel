@@ -74,15 +74,31 @@ async function getMarketMid(market: string): Promise<number | undefined> {
   }
 }
 
+/**
+ * Returns a string for testing purposes
+ * @customfunction 
+ */
 function testFunction(): string {
   return "Hello World!";
 }
 
-function testAPI(): string {
+/**
+ * validates API key
+ * @customfunction 
+ */
+function validateAPIKey(): boolean {
   const apiKey = localStorage.getItem('ArchitectApiKey');
-  return apiKey ?? "No Key";
+  const apiSecret = localStorage.getItem('ArchitectApiSecret');
+  if (!apiKey || !apiSecret) {
+    return false
+  }
+  return true
 }
 
+/**
+ * returns the market name
+ * @customfunction 
+ */
 async function testClient(): Promise<string> {
   const market_name = 'MES 20250321 CME Future/USD*CME/CQG';
 
@@ -104,4 +120,4 @@ async function testClient(): Promise<string> {
 }
 
 
-export { getMarketMid, testFunction, testAPI, testClient };
+export { getMarketMid, testFunction, validateAPIKey, testClient };

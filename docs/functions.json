@@ -18,11 +18,11 @@
         ]
       },
       {
-        "id": "testAPI",
-        "name": "testAPI",
-        "description": "Returns API string.",
+        "id": "validateAPIKey",
+        "name": "validateAPIKey",
+        "description": "Validates API Key and Secret.",
         "result": {
-          "type": "string",
+          "type": "boolean",
           "dimensionality": "scalar"
         },
         "parameters": []
