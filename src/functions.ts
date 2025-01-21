@@ -53,9 +53,12 @@ export function initializeClient() {
 
 /**
  * Fetch market snapshot and populate Excel worksheet
+ * @customfunction
  * @param market Market identifier
+ * @volatile
+ * maybe a streaming function?
  */
-async function getMarketMid(market: string): Promise<number | undefined> {
+export async function getMarketMid(market: string): Promise<number | undefined> {
   try {
     const snapshot = await client.marketSnapshot([], market);
 
@@ -78,7 +81,7 @@ async function getMarketMid(market: string): Promise<number | undefined> {
  * Returns a string for testing purposes
  * @customfunction 
  */
-function testFunction(): string {
+export function testFunction(): string {
   return "Hello World!";
 }
 
@@ -86,7 +89,7 @@ function testFunction(): string {
  * validates API key
  * @customfunction 
  */
-function validateAPIKey(): boolean {
+export function validateAPIKey(): boolean {
   const apiKey = localStorage.getItem('ArchitectApiKey');
   const apiSecret = localStorage.getItem('ArchitectApiSecret');
   if (!apiKey || !apiSecret) {
@@ -99,7 +102,7 @@ function validateAPIKey(): boolean {
  * returns the market name
  * @customfunction 
  */
-async function testClient(): Promise<string> {
+export async function testClient(): Promise<string> {
   const market_name = 'MES 20250321 CME Future/USD*CME/CQG';
 
   const snapshot = await client.filterMarkets([], {
@@ -118,6 +121,3 @@ async function testClient(): Promise<string> {
 
   return market;
 }
-
-
-export { getMarketMid, testFunction, validateAPIKey, testClient };
