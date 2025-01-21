@@ -150,4 +150,4 @@ export async function testClient(): Promise<string> {
   return market;
 }
 
-console.log("loading 4")
+console.log("loading 2:07")
