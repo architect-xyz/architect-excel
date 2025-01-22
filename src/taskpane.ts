@@ -23,8 +23,12 @@ Office.onReady(() => {
     try {
       setStorageItem('ArchitectApiKey', apiKey);
       setStorageItem('ArchitectApiSecret', apiSecret);
-      initializeClient();
-      status.textContent = 'Credentials saved! Client initialized!';
+      let success = await initializeClient();
+      if (success) {
+        status.textContent = 'Credentials saved! Client initialized!';
+      } else {
+        status.textContent = 'Credentials saved! However, Client was NOT successfully initialized!';
+      }
     } catch (err) {
       status.textContent = `Error: ${(err as Error).message}`;
     }
