@@ -123,8 +123,8 @@ export function testFunction(): string {
  * @customfunction 
  */
 export function validateAPIKey(): boolean {
-  const apiKey = localStorage.getItem('ArchitectApiKey');
-  const apiSecret = localStorage.getItem('ArchitectApiSecret');
+  const apiKey = getStorageItem('ArchitectApiKey');
+  const apiSecret = getStorageItem('ArchitectApiSecret');
   if (!apiKey || !apiSecret) {
     return false
   }
