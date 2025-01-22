@@ -2,6 +2,13 @@
     "allowCustomDataForDataTypeAny": true,
     "functions": [
         {
+            "description": "Initialize the client with user-provided API key and secret",
+            "id": "INITIALIZECLIENT",
+            "name": "INITIALIZECLIENT",
+            "parameters": [],
+            "result": {}
+        },
+        {
             "description": "Fetch market snapshot and populate Excel worksheet",
             "id": "GETMARKETMID",
             "name": "GETMARKETMID",
@@ -16,6 +23,15 @@
                 }
             ],
             "result": {}
+        },
+        {
+            "description": "Test error",
+            "id": "TESTERROR",
+            "name": "TESTERROR",
+            "parameters": [],
+            "result": {
+                "type": "string"
+            }
         },
         {
             "description": "Returns a string for testing purposes",

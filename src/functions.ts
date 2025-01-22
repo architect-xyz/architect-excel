@@ -65,6 +65,7 @@ export async function getStorageItem(key: string): Promise<string | null> {
 
 /**
  * Initialize the client with user-provided API key and secret
+ * @customfunction
  */
 export async function initializeClient() {
   const apiKey = await getStorageItem('ArchitectApiKey');
@@ -103,6 +104,14 @@ export async function getMarketMid(market: string): Promise<number | undefined> 
     console.error('Error fetching market snapshot:', error);
     return undefined;
   }
+}
+
+/**
+ * Test error
+ * @customfunction
+ */
+export function testError(): string {
+  throw new Error('Test error');
 }
 
 /**
