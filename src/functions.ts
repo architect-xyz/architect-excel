@@ -65,7 +65,6 @@ export async function getStorageItem(key: string): Promise<string | null> {
 
 /**
  * Initialize the client with user-provided API key and secret
- * @customfunction
  */
 export async function initializeClient() {
   const apiKey = await getStorageItem('ArchitectApiKey');
