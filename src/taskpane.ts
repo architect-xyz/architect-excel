@@ -1,6 +1,6 @@
 import { initializeClient, setStorageItem } from "./functions";
 
-Office.onReady(() => {
+Office.onReady(async () => {
   const form = document.getElementById('api-form') as HTMLFormElement;
 
   function cleanField(field: FormDataEntryValue | null)  : string {
