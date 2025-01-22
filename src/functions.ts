@@ -72,7 +72,7 @@ export async function initializeClient() {
   const apiSecret = await getStorageItem('ArchitectApiSecret');
 
   if (!apiKey || !apiSecret) {
-    throw new Error('API Key and Secret must be provided.');
+    throw new Error('Attempted to initialize client but API Key and Secret were not provided.');
   }
 
   config.apiKey = apiKey;
@@ -162,6 +162,6 @@ export async function testClient(): Promise<string> {
 
 Office.onReady((info) => {
   if (info.host === Office.HostType.Excel) {
-    initializeClient().catch(error => console.error(error));
+    initializeClient().catch(error => console.info(error));
   }
 });
