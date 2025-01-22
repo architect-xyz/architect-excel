@@ -158,3 +158,10 @@ export async function testClient(): Promise<string> {
 
   return market;
 }
+
+
+Office.onReady((info) => {
+  if (info.host === Office.HostType.Excel) {
+    initializeClient().catch(error => console.error(error));
+  }
+});
