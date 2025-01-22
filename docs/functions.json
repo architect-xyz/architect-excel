@@ -6,7 +6,9 @@
             "id": "INITIALIZECLIENT",
             "name": "INITIALIZECLIENT",
             "parameters": [],
-            "result": {}
+            "result": {
+                "type": "boolean"
+            }
         },
         {
             "description": "Fetch market snapshot and populate Excel worksheet",

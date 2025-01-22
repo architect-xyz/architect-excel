@@ -67,17 +67,18 @@ export async function getStorageItem(key: string): Promise<string | null> {
  * Initialize the client with user-provided API key and secret
  * @customfunction
  */
-export async function initializeClient() {
+export async function initializeClient() : Promise<boolean> {
   const apiKey = await getStorageItem('ArchitectApiKey');
   const apiSecret = await getStorageItem('ArchitectApiSecret');
 
   if (!apiKey || !apiSecret) {
-    throw new Error('Attempted to initialize client but API Key and Secret were not provided.');
+    return false;
   }
 
   config.apiKey = apiKey;
   config.apiSecret = apiSecret;
   client = create(config);
+  return true;
 }
 
 /**
@@ -160,8 +161,9 @@ export async function testClient(): Promise<string> {
 }
 
 
-Office.onReady((info) => {
+Office.onReady(async (info) => {
   if (info.host === Office.HostType.Excel) {
-    initializeClient().catch(error => console.info(error));
+    let success = await initializeClient()
+    success ? console.log('Client initialized using saved API key/secret') : console.log('Client not initialized because of missing API key or secret');
   }
 });
