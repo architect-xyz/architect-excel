@@ -18,16 +18,14 @@ day low
 
 import { create, type Config, type Client } from '@afintech/sdk/env/browser';
 
-console.log("loading 1")
 
 let config: Config = {
-  host: 'https://app.architect.co',
+  host: 'https://app.architect.co/',
   apiKey: '',
   apiSecret: '',
   tradingMode: 'live',
 };
 
-console.log("loading 2")
 
 let client: Client = (new Proxy({}, {
   get(_obj, _prop) {
@@ -37,8 +35,6 @@ let client: Client = (new Proxy({}, {
     throw new Error('Client is not initialized');
   }
 }) as Client);
-
-console.log("loading 3")
 
 /**
  * Helper function to set an item in storage
@@ -154,5 +150,3 @@ export async function testClient(): Promise<string> {
 
   return market;
 }
-
-console.log("loading 2:07")
