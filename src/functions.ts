@@ -20,7 +20,7 @@ import { create, type Config, type Client } from '@afintech/sdk/env/browser';
 
 
 let config: Config = {
-  host: 'https://app.architect.co/',
+  host: 'https://app.architect.co',
   apiKey: '',
   apiSecret: '',
   tradingMode: 'live',
