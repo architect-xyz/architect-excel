@@ -1,5 +1,7 @@
 const path = require('path');
 
+const CustomFunctionsMetadataPlugin = require("custom-functions-metadata-plugin");
+
 module.exports = {
     entry: {
         taskpane: './src/taskpane.ts',
@@ -29,5 +31,11 @@ module.exports = {
     mode: 'production',
     optimization: {
         minimize: true
-    }
+    },
+    plugins: [
+        new CustomFunctionsMetadataPlugin({
+          output: "functions.json",
+          input: "./src/functions.ts",
+        }), 
+    ]
 };

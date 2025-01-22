@@ -1,52 +1,55 @@
 {
+    "allowCustomDataForDataTypeAny": true,
     "functions": [
-      {
-        "id": "getMarketMid",
-        "name": "getMarketMid",
-        "description": "Gets market mid for a given symbol.",
-        "result": {
-          "type": "number",
-          "dimensionality": "scalar"
+        {
+            "description": "Initialize the client with user-provided API key and secret",
+            "id": "INITIALIZECLIENT",
+            "name": "INITIALIZECLIENT",
+            "parameters": [],
+            "result": {}
         },
-        "parameters": [
-          {
-            "name": "market",
-            "description": "Stock or market data symbol.",
-            "type": "string",
-            "required": true
-          }
-        ]
-      },
-      {
-        "id": "validateAPIKey",
-        "name": "validateAPIKey",
-        "description": "Validates API Key and Secret.",
-        "result": {
-          "type": "boolean",
-          "dimensionality": "scalar"
+        {
+            "description": "Fetch market snapshot and populate Excel worksheet",
+            "id": "GETMARKETMID",
+            "name": "GETMARKETMID",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Market identifier",
+                    "name": "market",
+                    "type": "string"
+                }
+            ],
+            "result": {}
         },
-        "parameters": []
-      },
-      {
-        "id": "testClient",
-        "name": "testClient",
-        "description": "Returns a simple filterMarket on MES.",
-        "result": {
-          "type": "string",
-          "dimensionality": "scalar"
+        {
+            "description": "Returns a string for testing purposes",
+            "id": "TESTFUNCTION",
+            "name": "TESTFUNCTION",
+            "parameters": [],
+            "result": {
+                "type": "string"
+            }
         },
-        "parameters": []
-      },
-      {
-        "id": "testFunction",
-        "name": "testFunction",
-        "description": "Returns Hello World!",
-        "result": {
-          "type": "string",
-          "dimensionality": "scalar"
+        {
+            "description": "validates API key",
+            "id": "VALIDATEAPIKEY",
+            "name": "VALIDATEAPIKEY",
+            "parameters": [],
+            "result": {
+                "type": "boolean"
+            }
         },
-        "parameters": []
-      }
+        {
+            "description": "returns the market name",
+            "id": "TESTCLIENT",
+            "name": "TESTCLIENT",
+            "parameters": [],
+            "result": {
+                "type": "string"
+            }
+        }
     ]
-  }
-  
+}
