@@ -72,4 +72,10 @@ a:hover {
 
 #apiKey, #apiSecret {
   max-width: 300px;
+  width: 100%;
+}
+
+.architect-container {
+  padding-left: 20px;
+  box-sizing: border-box;
 }
