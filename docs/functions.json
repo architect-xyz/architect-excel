@@ -11,6 +11,41 @@
             }
         },
         {
+            "description": "Get the last price of a market",
+            "id": "GETMARKETLAST",
+            "name": "GETMARKETLAST",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Market symbol",
+                    "name": "market",
+                    "type": "string"
+                }
+            ],
+            "result": {}
+        },
+        {
+            "description": "Get the bid price of a market",
+            "id": "GETMARKETBBO",
+            "name": "GETMARKETBBO",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Market symbol",
+                    "name": "market",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "number"
+            }
+        },
+        {
             "description": "Fetch market snapshot and populate Excel worksheet",
             "id": "GETMARKETMID",
             "name": "GETMARKETMID",
@@ -19,7 +54,7 @@
             },
             "parameters": [
                 {
-                    "description": "Market identifier",
+                    "description": "Market symbol",
                     "name": "market",
                     "type": "string"
                 }

@@ -1,17 +1,15 @@
 // Excel Plugin Example: Query Backend API Using TypeScript
 
+
 /*
 important functions:
-
-last price
-mid price
-bid price
-ask price
 close
 open
 day high
 day low
 */
+
+
 
 /// <reference types="office-runtime" />
 /// <reference types="office-js" />
@@ -58,11 +56,39 @@ export async function initializeClient() : Promise<boolean> {
   client = create(config);
   return true;
 }
+/**
+ * Get the last price of a market
+ * @customfunction
+ * @param market Market symbol
+ * @returns The last price of the given market
+ * @volatile
+ */
+export async function getMarketLast(market: string): Promise<number | undefined> {
+  throw new CustomFunctions.Error(
+    CustomFunctions.ErrorCode.notAvailable,
+    'Not implemented'
+  );
+}
+
+
+/**
+ * Get the bid price of a market
+ * @customfunction
+ * @param market Market symbol
+ * @returns The bbo prices of the given market
+ * @volatile
+ */
+export async function getMarketBBO(market: string): Promise<number[] []> {
+  return [[1, 2]]
+}
+
+
 
 /**
  * Fetch market snapshot and populate Excel worksheet
  * @customfunction
- * @param market Market identifier
+ * @param market Market symbol
+ * @returns The mid market price of the given market
  * @volatile
  * maybe a streaming function?
  */
