@@ -27,33 +27,6 @@
             "result": {}
         },
         {
-            "description": "Test error",
-            "id": "TESTERROR",
-            "name": "TESTERROR",
-            "parameters": [],
-            "result": {
-                "type": "string"
-            }
-        },
-        {
-            "description": "Returns a string for testing purposes",
-            "id": "TESTFUNCTION",
-            "name": "TESTFUNCTION",
-            "parameters": [],
-            "result": {
-                "type": "string"
-            }
-        },
-        {
-            "description": "validates API key",
-            "id": "VALIDATEAPIKEY",
-            "name": "VALIDATEAPIKEY",
-            "parameters": [],
-            "result": {
-                "type": "boolean"
-            }
-        },
-        {
             "description": "returns the market name",
             "id": "TESTCLIENT",
             "name": "TESTCLIENT",

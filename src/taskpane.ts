@@ -1,4 +1,5 @@
-import { initializeClient, setStorageItem } from "./functions";
+import { initializeClient} from "./functions";
+import { setStorageItem } from "./client";
 
 Office.onReady(async () => {
   const form = document.getElementById('api-form') as HTMLFormElement;

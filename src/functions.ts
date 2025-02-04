@@ -16,15 +16,9 @@ day low
 /// <reference types="office-runtime" />
 /// <reference types="office-js" />
 
-import { create, type Config, type Client } from '@afintech/sdk/env/browser';
+import { create, Client } from '@afintech/sdk/env/browser';
+import { getStorageItem, config } from './client';
 
-
-let config: Config = {
-  host: 'https://app.architect.co/',
-  apiKey: '',
-  apiSecret: '',
-  tradingMode: 'live',
-};
 
 
 let client: Client = (new Proxy({}, {
@@ -36,32 +30,6 @@ let client: Client = (new Proxy({}, {
   }
 }) as Client);
 
-/**
- * Helper function to set an item in storage
- */
-export async function setStorageItem(key: string, value: string): Promise<void> {
-  if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined') {
-    await OfficeRuntime.storage.setItem(key, value);
-  } else if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(key, value);
-  } else {
-    throw new Error('No available storage method to set to.');
-  }
-}
-
-/**
- * Helper function to get an item from storage
- */
-export async function getStorageItem(key: string): Promise<string | null> {
-  if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined') {
-    return await OfficeRuntime.storage.getItem(key);
-  } else if (typeof localStorage !== 'undefined') {
-    return localStorage.getItem(key);
-  } else {
-    throw new Error('No available storage method to get from.');
-  }
-}
-
 
 /**
  * Initialize the client with user-provided API key and secret.
@@ -72,8 +40,17 @@ export async function initializeClient() : Promise<boolean> {
   const apiKey = await getStorageItem('ArchitectApiKey');
   const apiSecret = await getStorageItem('ArchitectApiSecret');
 
-  if (!apiKey || !apiSecret) {
-    return false;
+  if (!apiKey) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "api_key has not been input"
+    )
+  }
+  if (!apiSecret) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "api_secret has not been input"
+    )
   }
 
   config.apiKey = apiKey;
@@ -106,38 +83,6 @@ export async function getMarketMid(market: string): Promise<number | undefined> 
     console.error('Error fetching market snapshot:', error);
     return undefined;
   }
-}
-
-/**
- * Test error
- * @customfunction
- */
-export function testError(): string {
-  throw new CustomFunctions.Error(
-    CustomFunctions.ErrorCode.invalidValue,
-    "This is a test error"
-  )
-}
-
-/**
- * Returns a string for testing purposes
- * @customfunction 
- */
-export function testFunction(): string {
-  return "Hello World!";
-}
-
-/**
- * validates API key
- * @customfunction 
- */
-export function validateAPIKey(): boolean {
-  const apiKey = getStorageItem('ArchitectApiKey');
-  const apiSecret = getStorageItem('ArchitectApiSecret');
-  if (!apiKey || !apiSecret) {
-    return false
-  }
-  return true
 }
 
 /**
