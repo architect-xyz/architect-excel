@@ -6,7 +6,9 @@ https://github.com/architect-xyz/architect-ts
 
 ## To Run
 
+
 ```bash
+npm install
 npx webpack
 ```
 

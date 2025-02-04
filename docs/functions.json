@@ -59,7 +59,9 @@
                     "type": "string"
                 }
             ],
-            "result": {}
+            "result": {
+                "type": "number"
+            }
         },
         {
             "description": "returns the market name",

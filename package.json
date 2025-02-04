@@ -22,7 +22,7 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/architect-xyz/architect-excel#readme",
   "devDependencies": {
-    "@types/office-js": "^1.0.457",
+    "@types/office-js": "1.0",
     "@types/office-runtime": "^1.0.35",
     "@types/custom-functions-runtime": "^1.6.8",
     "custom-functions-metadata-plugin": "2.1",
@@ -33,7 +33,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@afintech/sdk": "0.1.2",
+    "@afintech/sdk": "0.1",
     "@microsoft/office-js": "1.1",
     "generator-office": "^2.0",
     "office-js": "^0.1.0"

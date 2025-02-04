@@ -79,7 +79,23 @@ export async function getMarketLast(market: string): Promise<number | undefined>
  * @volatile
  */
 export async function getMarketBBO(market: string): Promise<number[] []> {
-  return [[1, 2]]
+  const snapshot = await client.marketSnapshot([], market);
+  if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      "Received bad data from the server, please try again."
+    )
+  }
+  try {
+    const bid = parseFloat(snapshot.bidPrice);
+    const ask = parseFloat(snapshot.askPrice);
+    return [[bid, ask]]
+  } catch (error) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "Failed to parse bid/ask prices"
+    )
+  }
 }
 
 
@@ -92,13 +108,15 @@ export async function getMarketBBO(market: string): Promise<number[] []> {
  * @volatile
  * maybe a streaming function?
  */
-export async function getMarketMid(market: string): Promise<number | undefined> {
+export async function getMarketMid(market: string): Promise<number> {
   try {
     const snapshot = await client.marketSnapshot([], market);
 
     if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
-      console.error('Invalid or missing snapshot data');
-      return NaN;
+      throw new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.notAvailable,
+        "Received bad data from the server, please try again."
+      )
     }
 
     const bid = parseFloat(snapshot.bidPrice);
@@ -106,8 +124,10 @@ export async function getMarketMid(market: string): Promise<number | undefined> 
 
     return isNaN(bid) || isNaN(ask) ? NaN : (bid + ask) / 2;
   } catch (error) {
-    console.error('Error fetching market snapshot:', error);
-    return undefined;
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "Error "
+    )
   }
 }
 
