@@ -2,7 +2,7 @@
     "allowCustomDataForDataTypeAny": true,
     "functions": [
         {
-            "description": "Initialize the client with user-provided API key and secret",
+            "description": "Initialize the client with user-provided API key and secret.\nThis should run when the user enters their API key/secret.",
             "id": "INITIALIZECLIENT",
             "name": "INITIALIZECLIENT",
             "parameters": [],

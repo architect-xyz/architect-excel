@@ -113,7 +113,10 @@ export async function getMarketMid(market: string): Promise<number | undefined> 
  * @customfunction
  */
 export function testError(): string {
-  throw new Error('Test error');
+  throw new CustomFunctions.Error(
+    CustomFunctions.ErrorCode.invalidValue,
+    "This is a test error"
+  )
 }
 
 /**
