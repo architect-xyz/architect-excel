@@ -23,7 +23,6 @@ form {
   align-items: center;
   gap: 0.5rem;
 
-  label {}
   input {
     background: #fff;
     border-radius: 4px;
