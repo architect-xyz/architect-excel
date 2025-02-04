@@ -64,7 +64,8 @@ export async function getStorageItem(key: string): Promise<string | null> {
 
 
 /**
- * Initialize the client with user-provided API key and secret
+ * Initialize the client with user-provided API key and secret.
+ * This should run when the user enters their API key/secret.
  * @customfunction
  */
 export async function initializeClient() : Promise<boolean> {

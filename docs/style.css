@@ -68,3 +68,8 @@ a {
 a:hover {
     background-color: #0056b3;
 }
+
+
+#apiKey, #apiSecret {
+  max-width: 300px;
+}
