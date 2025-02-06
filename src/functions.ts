@@ -109,8 +109,16 @@ export async function getMarketBBO(market: string): Promise<number[] []> {
  * maybe a streaming function?
  */
 export async function getMarketMid(market: string): Promise<number> {
+  let snapshot;
   try {
-    const snapshot = await client.marketSnapshot([], market);
+    snapshot = await client.marketSnapshot([], market);
+  } catch (error) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "Error getting market snapshot"
+    )
+  }
+
 
     if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
       throw new CustomFunctions.Error(
@@ -123,12 +131,6 @@ export async function getMarketMid(market: string): Promise<number> {
     const ask = parseFloat(snapshot.askPrice);
 
     return isNaN(bid) || isNaN(ask) ? NaN : (bid + ask) / 2;
-  } catch (error) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.invalidValue,
-      "Error "
-    )
-  }
 }
 
 /**
@@ -136,8 +138,7 @@ export async function getMarketMid(market: string): Promise<number> {
  * @customfunction 
  */
 export async function testClient(): Promise<string> {
-  const market_name = 'MES 20250321 CME Future/USD*CME/CQG';
-
+  const market_name = "ES 20250321 CME Future";
   const snapshot = await client.filterMarkets([], {
     venue: 'CME',
     base: 'MES',
