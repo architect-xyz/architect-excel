@@ -2,7 +2,7 @@
 import { type Config, } from '@afintech/sdk/env/browser';
 
 let config: Config = {
-  host: 'https://staging.architect.co/',
+  host: 'https://app.architect.co/',
   apiKey: '',
   apiSecret: '',
   tradingMode: 'live',
