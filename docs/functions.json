@@ -85,6 +85,7 @@
             "name": "TESTCLIENT2",
             "parameters": [],
             "result": {
+                "dimensionality": "matrix",
                 "type": "string"
             }
         }
