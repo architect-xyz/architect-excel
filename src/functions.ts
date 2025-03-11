@@ -122,7 +122,19 @@ export async function getMarketMid(symbol: string, venue: string): Promise<numbe
  * returns the market name
  * @customfunction 
  */
-export async function testClient(): Promise<string[]> {
+export async function testClient(): Promise<string> {
+  const market_name = "ES 20250321 CME Future";
+
+  const symbol = await client.searchSymbols(undefined,undefined,undefined, market_name);
+
+  return symbol[0];
+}
+
+/**
+ * returns the market name
+ * @customfunction 
+ */
+export async function testClient2(): Promise<string []> {
   const market_name = "ES 20250321 CME Future";
 
   const symbol = await client.searchSymbols(undefined,undefined,undefined, market_name);

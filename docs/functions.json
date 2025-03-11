@@ -78,6 +78,15 @@
             "result": {
                 "type": "string"
             }
+        },
+        {
+            "description": "returns the market name",
+            "id": "TESTCLIENT2",
+            "name": "TESTCLIENT2",
+            "parameters": [],
+            "result": {
+                "type": "string"
+            }
         }
     ]
 }
