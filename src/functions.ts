@@ -106,9 +106,9 @@ export async function getMarketBBO(symbol: string, venue: string): Promise<numbe
     )
   }
   try {
-    const bid: number = snapshot.bidPrice ? parseFloat(snapshot.bidPrice) : NaN;
-    const ask: number = snapshot.askPrice ? parseFloat(snapshot.askPrice) : NaN;
-    const last: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
+    let  bid: number = snapshot.bidPrice ? parseFloat(snapshot.bidPrice) : NaN;
+    let  ask: number = snapshot.askPrice ? parseFloat(snapshot.askPrice) : NaN;
+    let  last: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
     return [[bid, ask, last]]
   } catch (error) {
     throw new CustomFunctions.Error(
