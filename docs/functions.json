@@ -27,7 +27,7 @@
             "result": {}
         },
         {
-            "description": "Get the bid price of a market",
+            "description": "Get the bid/ask price of a market",
             "id": "GETMARKETBBO",
             "name": "GETMARKETBBO",
             "options": {
@@ -45,6 +45,7 @@
                 }
             ],
             "result": {
+                "dimensionality": "matrix",
                 "type": "number"
             }
         },
@@ -68,6 +69,21 @@
             ],
             "result": {
                 "type": "number"
+            }
+        },
+        {
+            "description": "Search symbols by market name",
+            "id": "SEARCHSYMBOLS",
+            "name": "SEARCHSYMBOLS",
+            "parameters": [
+                {
+                    "name": "market_name",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
             }
         },
         {

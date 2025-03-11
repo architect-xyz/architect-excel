@@ -7,8 +7,25 @@ close
 open
 day high
 day low
-*/
 
+Valid output types
+
+Primitive Types:
+
+    String: Returns text values.​
+    Number: Returns numerical values.​
+    Boolean: Returns true or false.​
+    Stack Overflow+3learn.microsoft.com+3learn.microsoft.com+3
+
+Arrays:
+
+    Array of Arrays: For multi-dimensional data, you can return a two-dimensional array (e.g., [[1, 2], [3, 4]]), which Excel will display across corresponding cell ranges.​
+
+Specialized Data Types:
+
+    Entity: Represents complex data structures with properties and optional display metadata.​
+    FormattedNumber: Allows returning numbers with specific formatting, such as currency or percentages.​
+*/
 
 
 /// <reference types="office-runtime" />
@@ -73,13 +90,13 @@ export async function getMarketLast(market: string): Promise<number | undefined>
 
 
 /**
- * Get the bid price of a market
+ * Get the bid/ask price of a market
  * @customfunction
  * @param symbol Market symbol
  * @returns The bbo prices of the given market
  * @volatile
  */
-export async function getMarketBBO(symbol: string, venue: string): Promise<number[]> {
+export async function getMarketBBO(symbol: string, venue: string): Promise<number[] []> {
   let snapshot: Ticker = await client.ticker(["symbol", "bidPrice", "askPrice"], symbol, venue)
   if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
     throw new CustomFunctions.Error(
@@ -90,7 +107,7 @@ export async function getMarketBBO(symbol: string, venue: string): Promise<numbe
   try {
     const bid = parseFloat(snapshot.bidPrice);
     const ask = parseFloat(snapshot.askPrice);
-    return [bid, ask]
+    return [[bid, ask]]
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -112,11 +129,23 @@ export async function getMarketBBO(symbol: string, venue: string): Promise<numbe
 export async function getMarketMid(symbol: string, venue: string): Promise<number> {
     let bbo = await getMarketBBO(symbol, venue);
 
-    let ask = bbo[1];
-    let bid = bbo[0];
+    let ask = bbo[0][1];
+    let bid = bbo[0][0];
 
     return isNaN(bid) || isNaN(ask) ? NaN : (bid + ask) / 2;
 }
+
+/**
+ * Search symbols by market name
+ * @customfunction 
+ */
+export async function searchSymbols(market_name: string): Promise<string [] []> {
+  const symbols = await client.searchSymbols(undefined,undefined,undefined, market_name);
+
+  const result = symbols.map(symbol => [symbol]);
+  return result;
+}
+
 
 /**
  * returns the market name
@@ -125,9 +154,9 @@ export async function getMarketMid(symbol: string, venue: string): Promise<numbe
 export async function testClient(): Promise<string> {
   const market_name = "ES 20250321 CME Future";
 
-  const symbol = await client.searchSymbols(undefined,undefined,undefined, market_name);
+  const symbols = await client.searchSymbols(undefined,undefined,undefined, market_name);
 
-  return symbol[0];
+  return symbols[0];
 }
 
 /**
@@ -137,9 +166,10 @@ export async function testClient(): Promise<string> {
 export async function testClient2(): Promise<string [] []> {
   const market_name = "ES 20250321 CME Future";
 
-  const symbol = await client.searchSymbols(undefined,undefined,undefined, market_name);
+  const symbols = await client.searchSymbols(undefined,undefined,undefined, market_name);
 
-  return [symbol];
+  const result = symbols.map(symbol => [symbol]);
+  return result;
 }
 
 
