@@ -40,6 +40,7 @@
                     "type": "string"
                 },
                 {
+                    "description": "Market venue",
                     "name": "venue",
                     "type": "string"
                 }

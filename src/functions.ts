@@ -93,6 +93,7 @@ export async function getMarketLast(market: string): Promise<number | undefined>
  * Get the bid/ask and last price of a market
  * @customfunction
  * @param symbol Market symbol
+ * @param venue Market venue
  * @returns The bbo prices of the given market
  * @volatile
  */
