@@ -90,7 +90,7 @@ export async function getMarketLast(market: string): Promise<number | undefined>
 
 
 /**
- * Get the bid/ask price of a market
+ * Get the bid/ask and last price of a market
  * @customfunction
  * @param symbol Market symbol
  * @returns The bbo prices of the given market
@@ -98,16 +98,17 @@ export async function getMarketLast(market: string): Promise<number | undefined>
  */
 export async function getMarketBBO(symbol: string, venue: string): Promise<number[] []> {
   let snapshot: Ticker = await client.ticker(["symbol"], symbol, venue)
-  if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
+  if (!snapshot) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.notAvailable,
       "Received bad data from the server, please try again."
     )
   }
   try {
-    const bid = parseFloat(snapshot.bidPrice);
-    const ask = parseFloat(snapshot.askPrice);
-    return [[bid, ask]]
+    const bid: number = snapshot.bidPrice ? parseFloat(snapshot.bidPrice) : NaN;
+    const ask: number = snapshot.askPrice ? parseFloat(snapshot.askPrice) : NaN;
+    const last: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
+    return [[bid, ask, last]]
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,

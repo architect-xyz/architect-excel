@@ -27,7 +27,7 @@
             "result": {}
         },
         {
-            "description": "Get the bid/ask price of a market",
+            "description": "Get the bid/ask and last price of a market",
             "id": "GETMARKETBBO",
             "name": "GETMARKETBBO",
             "options": {
