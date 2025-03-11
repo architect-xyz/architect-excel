@@ -98,7 +98,7 @@ export async function getMarketLast(market: string): Promise<number | undefined>
  * @volatile
  */
 export async function getMarketBBO(symbol: string, venue: string): Promise<number[] []> {
-  let snapshot: Ticker = await client.ticker(["symbol"], symbol, venue)
+  let snapshot: Ticker = await client.ticker(["symbol", "bidPrice", "askPrice", "lastPrice"], symbol, venue)
   if (!snapshot) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.notAvailable,
