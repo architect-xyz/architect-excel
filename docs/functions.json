@@ -36,12 +36,15 @@
             "parameters": [
                 {
                     "description": "Market symbol",
-                    "name": "market",
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "name": "venue",
                     "type": "string"
                 }
             ],
             "result": {
-                "dimensionality": "matrix",
                 "type": "number"
             }
         },
@@ -55,7 +58,11 @@
             "parameters": [
                 {
                     "description": "Market symbol",
-                    "name": "market",
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "name": "venue",
                     "type": "string"
                 }
             ],

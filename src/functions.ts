@@ -16,6 +16,7 @@ day low
 
 import { create, Client } from '@afintech/sdk/env/browser';
 import { getStorageItem, config } from './client';
+import { Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
 
 
 
@@ -74,12 +75,12 @@ export async function getMarketLast(market: string): Promise<number | undefined>
 /**
  * Get the bid price of a market
  * @customfunction
- * @param market Market symbol
+ * @param symbol Market symbol
  * @returns The bbo prices of the given market
  * @volatile
  */
-export async function getMarketBBO(market: string): Promise<number[] []> {
-  const snapshot = await client.marketSnapshot([], market);
+export async function getMarketBBO(symbol: string, venue: string): Promise<number[]> {
+  let snapshot: Ticker = await client.ticker(["symbol", "bidPrice", "askPrice"], symbol, venue)
   if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.notAvailable,
@@ -89,7 +90,7 @@ export async function getMarketBBO(market: string): Promise<number[] []> {
   try {
     const bid = parseFloat(snapshot.bidPrice);
     const ask = parseFloat(snapshot.askPrice);
-    return [[bid, ask]]
+    return [bid, ask]
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -103,32 +104,16 @@ export async function getMarketBBO(market: string): Promise<number[] []> {
 /**
  * Fetch market snapshot and populate Excel worksheet
  * @customfunction
- * @param market Market symbol
+ * @param symbol Market symbol
  * @returns The mid market price of the given market
  * @volatile
  * maybe a streaming function?
  */
-export async function getMarketMid(market: string): Promise<number> {
-  let snapshot;
-  try {
-    snapshot = await client.marketSnapshot([], market);
-  } catch (error) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.invalidValue,
-      "Error getting market snapshot"
-    )
-  }
+export async function getMarketMid(symbol: string, venue: string): Promise<number> {
+    let bbo = await getMarketBBO(symbol, venue);
 
-
-    if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
-      throw new CustomFunctions.Error(
-        CustomFunctions.ErrorCode.notAvailable,
-        "Received bad data from the server, please try again."
-      )
-    }
-
-    const bid = parseFloat(snapshot.bidPrice);
-    const ask = parseFloat(snapshot.askPrice);
+    let ask = bbo[1];
+    let bid = bbo[0];
 
     return isNaN(bid) || isNaN(ask) ? NaN : (bid + ask) / 2;
 }
@@ -137,23 +122,12 @@ export async function getMarketMid(market: string): Promise<number> {
  * returns the market name
  * @customfunction 
  */
-export async function testClient(): Promise<string> {
+export async function testClient(): Promise<string[]> {
   const market_name = "ES 20250321 CME Future";
-  const snapshot = await client.filterMarkets([], {
-    venue: 'CME',
-    base: 'MES',
-    quote: '',
-    underlying: '',
-    maxResults: 1,
-    resultsOffset: 0,
-    searchString: '',
-    onlyFavorites: false,
-    sortByVolumeDesc: true,
-  });
 
-  const market = snapshot[0].exchangeSymbol;
+  const symbol = await client.searchSymbols(undefined,undefined,undefined, market_name);
 
-  return market;
+  return symbol;
 }
 
 
