@@ -34,7 +34,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@afintech/sdk": "0.2.0-alpha.1",
+    "@afintech/sdk": "0.2.0",
     "@microsoft/office-js": "1.1",
     "office-js": "^0.1.0"
   },

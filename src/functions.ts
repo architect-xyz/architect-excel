@@ -139,43 +139,53 @@ export async function getMarketMid(symbol: string, venue: string): Promise<numbe
     return isNaN(bid) || isNaN(ask) ? NaN : (bid + ask) / 2;
 }
 
+
+
+/**
+ * Get the bid/ask/last price and size of a market
+ * @customfunction
+ * @param symbol Market symbol
+ * @param venue Market venue
+ * @returns The ticker information
+ * @volatile
+ */
+export async function getTicker(symbol: string, venue: string): Promise<number[] []> {
+  let snapshot: Ticker = await client.ticker(["symbol", "bidPrice", "bidSize", "askPrice", "askSize", "lastPrice", "lastSize"], symbol, venue)
+  if (!snapshot) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      "Received bad data from the server, please try again."
+    )
+  }
+  try {
+    console.log(snapshot)
+    console.log(snapshot.bidPrice, snapshot.askPrice, snapshot.lastPrice)
+    const bid: number = snapshot.bidPrice ? parseFloat(snapshot.bidPrice) : NaN;
+    const ask: number = snapshot.askPrice ? parseFloat(snapshot.askPrice) : NaN;
+    const last: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
+    return [[bid, ask, last]]
+  } catch (error) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "Failed to parse bid/ask prices"
+    )
+  }
+}
+
+
+
+
+
 /**
  * Search symbols by market name
  * @customfunction 
  */
 export async function searchSymbols(market_name: string): Promise<string [] []> {
-  const symbols = await client.searchSymbols(undefined,undefined,undefined, market_name);
+  const symbols = await client.searchSymbols({ searchString: market_name});
 
   const result = symbols.map(symbol => [symbol]);
   return result;
 }
-
-
-/**
- * returns the market name
- * @customfunction 
- */
-export async function testClient(): Promise<string> {
-  const market_name = "ES 20250321 CME Future";
-
-  const symbols = await client.searchSymbols(undefined,undefined,undefined, market_name);
-
-  return symbols[0];
-}
-
-/**
- * returns the market name
- * @customfunction 
- */
-export async function testClient2(): Promise<string [] []> {
-  const market_name = "ES 20250321 CME Future";
-
-  const symbols = await client.searchSymbols(undefined,undefined,undefined, market_name);
-
-  const result = symbols.map(symbol => [symbol]);
-  return result;
-}
-
 
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Excel) {

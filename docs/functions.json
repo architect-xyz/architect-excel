@@ -73,6 +73,30 @@
             }
         },
         {
+            "description": "Get the bid/ask/last price and size of a market",
+            "id": "GETTICKER",
+            "name": "GETTICKER",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Market symbol",
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "description": "Market venue",
+                    "name": "venue",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "number"
+            }
+        },
+        {
             "description": "Search symbols by market name",
             "id": "SEARCHSYMBOLS",
             "name": "SEARCHSYMBOLS",
@@ -82,25 +106,6 @@
                     "type": "string"
                 }
             ],
-            "result": {
-                "dimensionality": "matrix",
-                "type": "string"
-            }
-        },
-        {
-            "description": "returns the market name",
-            "id": "TESTCLIENT",
-            "name": "TESTCLIENT",
-            "parameters": [],
-            "result": {
-                "type": "string"
-            }
-        },
-        {
-            "description": "returns the market name",
-            "id": "TESTCLIENT2",
-            "name": "TESTCLIENT2",
-            "parameters": [],
             "result": {
                 "dimensionality": "matrix",
                 "type": "string"
