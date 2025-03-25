@@ -156,8 +156,7 @@
                 }
             ],
             "result": {
-                "dimensionality": "matrix",
-                "type": "string"
+                "type": "number"
             }
         },
         {

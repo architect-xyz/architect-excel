@@ -305,7 +305,7 @@ export async function getPnL(account_name: string): Promise<number[] []> {
  * @returns Account balances
  * @volatile
  */
-export async function getAccountBalance(account_name: string): Promise<string [] []> {
+export async function getAccountBalance(account_name: string): Promise<number> {
   let snapshot = await client.accountSummary([], account_name)
   if (!snapshot) {
     throw new CustomFunctions.Error(
@@ -314,17 +314,17 @@ export async function getAccountBalance(account_name: string): Promise<string []
     )
   }
 
-  let products: string[] = [];
-  let balances: string[] = [];
+  let usd_balance: number = 0;
 
   snapshot.balances.forEach(balance => {
-    products.push(balance.product)
-    balances.push(balance.balance)
+    if (balance.product == "USD") {
+      usd_balance = parseFloat(balance.balance)
+    }
   }
   )
 
   try {
-    return [products, balances]
+    return usd_balance
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
