@@ -77,10 +77,7 @@ export async function initializeClient() : Promise<string> {
   try {
     return await client.userEmail();
   } catch (error) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.invalidValue,
-      "Failed to initialize client"
-    )
+    return "Client failed to initialize. Please check your API key and secret.";
   }
  }
 
@@ -342,7 +339,11 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
 
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Excel) {
-    let success = await initializeClient()
-    success ? console.log('Client initialized using saved API key/secret') : console.log('Client not initialized because of missing API key or secret');
+    try {
+      await initializeClient()
+      console.log('Client initialized using saved API key/secret');
+    } catch (error) {
+      console.error(error)
+    }
   }
 });
