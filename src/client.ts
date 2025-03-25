@@ -30,11 +30,7 @@ export async function setStorageItem(key: string, value: string): Promise<void> 
  */
 export async function getStorageItem(key: string): Promise<string | null> {
   if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined') {
-    try {
-      return await OfficeRuntime.storage.getItem(key);
-    } catch (error) {
-      return null
-    }
+    return await OfficeRuntime.storage.getItem(key);
   } else if (typeof localStorage !== 'undefined') {
     return localStorage.getItem(key);
   } else {

@@ -54,8 +54,16 @@ let client: Client = (new Proxy({}, {
  * @volatile
  */
 export async function initializeClient() : Promise<string> {
-  const apiKey = await getStorageItem('ArchitectApiKey');
-  const apiSecret = await getStorageItem('ArchitectApiSecret');
+  let apiKey: string | null;
+  let apiSecret: string | null;
+  try {
+    apiKey = await getStorageItem('ArchitectApiKey');
+    apiSecret = await getStorageItem('ArchitectApiSecret');
+  } catch (error) {
+    console.log("Error accessing storage");
+    apiKey = null;
+    apiSecret = null;
+  }
 
   if (!apiKey) {
     throw new CustomFunctions.Error(
