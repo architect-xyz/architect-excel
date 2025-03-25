@@ -1,4 +1,4 @@
-import { initializeClient} from "./functions";
+// import { initializeClient} from "./functions";
 import { setStorageItem } from "./client";
 
 Office.onReady(async () => {
@@ -24,12 +24,12 @@ Office.onReady(async () => {
     try {
       setStorageItem('ArchitectApiKey', apiKey);
       setStorageItem('ArchitectApiSecret', apiSecret);
-      let success = await initializeClient();
-      if (success) {
-        status.textContent = 'Credentials saved! Client initialized!';
-      } else {
-        status.textContent = 'Credentials saved! However, Client was NOT successfully initialized!';
-      }
+      // let success = await initializeClient();
+      // if (success) {
+      //   status.textContent = 'Credentials saved! Client initialized!';
+      // } else {
+      //   status.textContent = 'Credentials saved! However, Client was NOT successfully initialized!';
+      // }
     } catch (err) {
       status.textContent = `Error: ${(err as Error).message}`;
     }
