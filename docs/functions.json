@@ -7,24 +7,8 @@
             "name": "INITIALIZECLIENT",
             "parameters": [],
             "result": {
-                "type": "boolean"
+                "type": "string"
             }
-        },
-        {
-            "description": "Get the last price of a market",
-            "id": "GETMARKETLAST",
-            "name": "GETMARKETLAST",
-            "options": {
-                "volatile": true
-            },
-            "parameters": [
-                {
-                    "description": "Market symbol",
-                    "name": "market",
-                    "type": "string"
-                }
-            ],
-            "result": {}
         },
         {
             "description": "Get the bid/ask and last price of a market",
@@ -94,6 +78,83 @@
             "result": {
                 "dimensionality": "matrix",
                 "type": "number"
+            }
+        },
+        {
+            "description": "Get accounts",
+            "id": "GETACCOUNTS",
+            "name": "GETACCOUNTS",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "add the header",
+                    "name": "header",
+                    "optional": true,
+                    "type": "boolean"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
+            }
+        },
+        {
+            "description": "Get Positions",
+            "id": "GETPOSITIONS",
+            "name": "GETPOSITIONS",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Account name",
+                    "name": "account_name",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
+            }
+        },
+        {
+            "description": "Get Daily PnL",
+            "id": "GETPNL",
+            "name": "GETPNL",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Account name",
+                    "name": "account_name",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "number"
+            }
+        },
+        {
+            "description": "Get Account Balance",
+            "id": "GETACCOUNTBALANCE",
+            "name": "GETACCOUNTBALANCE",
+            "options": {
+                "volatile": true
+            },
+            "parameters": [
+                {
+                    "description": "Account name",
+                    "name": "account_name",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
             }
         },
         {
