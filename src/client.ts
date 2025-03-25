@@ -15,6 +15,7 @@ export {config};
  * Helper function to set an item in storage
  */
 export async function setStorageItem(key: string, value: string): Promise<void> {
+  return
   // Office add-in environment
   if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
     await OfficeRuntime.storage.setItem(key, value);
@@ -38,6 +39,7 @@ export async function setStorageItem(key: string, value: string): Promise<void> 
  * Helper function to get an item from storage
  */
 export async function getStorageItem(key: string): Promise<string | null> {
+  return null;
   if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
     return await OfficeRuntime.storage.getItem(key);
   } else if (typeof localStorage !== 'undefined') {
