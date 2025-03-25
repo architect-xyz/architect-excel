@@ -50,6 +50,8 @@ let client: Client = (new Proxy({}, {
  * Initialize the client with user-provided API key and secret.
  * This should run when the user enters their API key/secret.
  * @customfunction
+ * @returns The user's email address
+ * @volatile
  */
 export async function initializeClient() : Promise<string> {
   const apiKey = await getStorageItem('ArchitectApiKey');
