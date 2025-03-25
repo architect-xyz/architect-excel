@@ -60,7 +60,7 @@ export async function initializeClient() : Promise<string> {
     apiKey = await getStorageItem('ArchitectApiKey');
     apiSecret = await getStorageItem('ArchitectApiSecret');
   } catch (error) {
-    console.log("Error accessing storage");
+    console.log("Error accessing storage.");
     apiKey = null;
     apiSecret = null;
   }
@@ -348,6 +348,7 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Excel) {
     try {
+      await new Promise(f => setTimeout(f, 500));
       await initializeClient()
       console.log('Client initialized using saved API key/secret');
     } catch (error) {
