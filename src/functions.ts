@@ -352,7 +352,7 @@ Office.onReady(async (info) => {
       await initializeClient()
       console.log('Client initialized using saved API key/secret');
     } catch (error) {
-      // console.log(error)
+      console.log(error)
     }
   }
 });
