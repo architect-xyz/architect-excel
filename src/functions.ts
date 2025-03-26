@@ -228,7 +228,7 @@ export async function accountPositions(account_name: string): Promise<string [] 
     )
   }
 
-  let timestamp = new Date(snapshot.timestamp).toLocaleString()
+  let timestamp: string = snapshot.timestamp;
 
   let breakEvenPrice: string[] = [];
   let costBasis: string[] = [];
