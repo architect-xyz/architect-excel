@@ -159,6 +159,7 @@
             "name": "SEARCHSYMBOLS",
             "parameters": [
                 {
+                    "description": "Market name, e.g. \"ES\", \"NQ\", \"RTY\"",
                     "name": "market_name",
                     "type": "string"
                 }

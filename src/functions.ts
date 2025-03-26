@@ -232,10 +232,10 @@ export async function accountPositions(account_name: string): Promise<string[][]
     const headers = [
       "Symbol",
       "Quantity",
-      "Break Even Price",
       "Cost Basis",
-      "Liquidation Price",
-      "Trade Time"
+      // "Break Even Price",
+      // "Liquidation Price",
+      // "Trade Time"
     ];
     const rows: string[][] = [[snapshot.timestamp, ...Array(headers.length - 1).fill("")]];
 
@@ -245,10 +245,10 @@ export async function accountPositions(account_name: string): Promise<string[][]
       rows.push([
         position.symbol,
         position.quantity,
-        position.breakEvenPrice ?? "NaN",
         position.costBasis ?? "NaN",
-        position.liquidationPrice ?? "NaN",
-        position.tradeTime ?? ""
+        // position.breakEvenPrice ?? "NaN",
+        // position.liquidationPrice ?? "NaN",
+        // position.tradeTime ?? ""
       ]);
     });
 
@@ -335,6 +335,7 @@ export async function accountBalance(account_name: string): Promise<number> {
 
 /**
  * Search symbols by market name
+ * @param market_name Market name, e.g. "ES", "NQ", "RTY"
  * @customfunction 
  */
 export async function searchSymbols(market_name: string): Promise<string [] []> {
