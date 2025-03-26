@@ -247,7 +247,7 @@ export async function accountPositions(account_name: string): Promise<string [] 
   })
 
   try {
-    return [[timestamp], breakEvenPrice, costBasis, liquidationPrice, symbol, qty, tradeTime]
+    return [[snapshot.timestamp, ...Array(breakEvenPrice.length - 1).fill("")], breakEvenPrice, costBasis, liquidationPrice, symbol, qty, tradeTime]
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
