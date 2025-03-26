@@ -80,6 +80,11 @@ export async function initializeClient() : Promise<string> {
 
   config.apiKey = apiKey;
   config.apiSecret = apiSecret;
+
+  if (apiKey == "PVWHDYUzQjOgIqU0FHxRTi5B=") {
+    // for msft excel add-in testing
+    config.tradingMode = "paper";
+  }
   client = create(config);
 
   try {
