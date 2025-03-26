@@ -12,8 +12,6 @@
   <AppDomains>
     <AppDomain>https://architect-xyz.github.io</AppDomain>
     <AppDomain>https://architect.co</AppDomain>
-    <AppDomain>https://microsoft.com</AppDomain>
-    <AppDomain>https://appsforoffice.microsoft.com</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
