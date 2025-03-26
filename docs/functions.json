@@ -15,8 +15,8 @@
         },
         {
             "description": "Get the bid/ask and last price of a market",
-            "id": "GETMARKETBBO",
-            "name": "GETMARKETBBO",
+            "id": "MARKETBBO",
+            "name": "MARKETBBO",
             "options": {
                 "volatile": true
             },
@@ -39,8 +39,8 @@
         },
         {
             "description": "Fetch market snapshot and populate Excel worksheet",
-            "id": "GETMARKETMID",
-            "name": "GETMARKETMID",
+            "id": "MARKETMID",
+            "name": "MARKETMID",
             "options": {
                 "volatile": true
             },
@@ -61,8 +61,8 @@
         },
         {
             "description": "Get the bid/ask/last price and size of a market",
-            "id": "GETTICKER",
-            "name": "GETTICKER",
+            "id": "MARKETTICKER",
+            "name": "MARKETTICKER",
             "options": {
                 "volatile": true
             },
@@ -85,8 +85,8 @@
         },
         {
             "description": "Get accounts",
-            "id": "GETACCOUNTS",
-            "name": "GETACCOUNTS",
+            "id": "ACCOUNTLIST",
+            "name": "ACCOUNTLIST",
             "options": {
                 "volatile": true
             },
@@ -105,8 +105,8 @@
         },
         {
             "description": "Get Positions",
-            "id": "GETPOSITIONS",
-            "name": "GETPOSITIONS",
+            "id": "ACCOUNTPOSITIONS",
+            "name": "ACCOUNTPOSITIONS",
             "options": {
                 "volatile": true
             },
@@ -124,8 +124,8 @@
         },
         {
             "description": "Get Daily PnL",
-            "id": "GETPNL",
-            "name": "GETPNL",
+            "id": "ACCOUNTPNL",
+            "name": "ACCOUNTPNL",
             "options": {
                 "volatile": true
             },
@@ -143,8 +143,8 @@
         },
         {
             "description": "Get Account Balance",
-            "id": "GETACCOUNTBALANCE",
-            "name": "GETACCOUNTBALANCE",
+            "id": "ACCOUNTBALANCE",
+            "name": "ACCOUNTBALANCE",
             "options": {
                 "volatile": true
             },

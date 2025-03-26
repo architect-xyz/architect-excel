@@ -97,8 +97,7 @@ export async function initializeClient() : Promise<string> {
  * @returns The bbo prices of the given market
  * @volatile
  */
-export async function getMarketBBO(symbol: string, venue: string): Promise<number[] []> {
-  // let snapshot: Ticker = await client.ticker(["symbol", "bidPrice", "askPrice", "lastPrice"], symbol, venue)
+export async function marketBBO(symbol: string, venue: string): Promise<number[] []> {
   let snapshot: Ticker = await client.ticker([], symbol, venue)
   if (!snapshot) {
     throw new CustomFunctions.Error(
@@ -107,12 +106,9 @@ export async function getMarketBBO(symbol: string, venue: string): Promise<numbe
     )
   }
   try {
-    console.log(snapshot)
-    console.log(snapshot.bidPrice, snapshot.askPrice, snapshot.lastPrice)
     const bid: number = snapshot.bidPrice ? parseFloat(snapshot.bidPrice) : NaN;
     const ask: number = snapshot.askPrice ? parseFloat(snapshot.askPrice) : NaN;
-    const last: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
-    return [[bid, ask, last]]
+    return [[bid, ask]]
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -130,8 +126,8 @@ export async function getMarketBBO(symbol: string, venue: string): Promise<numbe
  * @returns The mid market price of the given market
  * @volatile
  */
-export async function getMarketMid(symbol: string, venue: string): Promise<number> {
-    let bbo = await getMarketBBO(symbol, venue);
+export async function marketMid(symbol: string, venue: string): Promise<number> {
+    let bbo = await marketBBO(symbol, venue);
 
     let ask = bbo[0][1];
     let bid = bbo[0][0];
@@ -150,8 +146,7 @@ export async function getMarketMid(symbol: string, venue: string): Promise<numbe
  * @returns The ticker information: bid price, bid size, ask price, ask size, last price, last size
  * @volatile
  */
-export async function getTicker(symbol: string, venue: string): Promise<number[] []> {
-  // let snapshot: Ticker = await client.ticker(["symbol", "bidPrice", "bidSize", "askPrice", "askSize", "lastPrice", "lastSize"], symbol, venue)
+export async function marketTicker(symbol: string, venue: string): Promise<number[] []> {
   let snapshot: Ticker = await client.ticker([], symbol, venue)
   if (!snapshot) {
     throw new CustomFunctions.Error(
@@ -183,7 +178,7 @@ export async function getTicker(symbol: string, venue: string): Promise<number[]
  * @returns List of accounts
  * @volatile
  */
-export async function getAccounts(header?: boolean): Promise<string[][]> {
+export async function accountList(header?: boolean): Promise<string[][]> {
   const snapshot = await client.accounts([]);
 
   if (!snapshot) {
@@ -226,7 +221,7 @@ export async function getAccounts(header?: boolean): Promise<string[][]> {
  * @returns The position information
  * @volatile
  */
-export async function getPositions(account_name: string): Promise<string [] []> {
+export async function accountPositions(account_name: string): Promise<string [] []> {
   let snapshot = await client.accountSummary([], account_name)
   if (!snapshot) {
     throw new CustomFunctions.Error(
@@ -271,7 +266,7 @@ export async function getPositions(account_name: string): Promise<string [] []> 
  * @returns account pnl
  * @volatile
  */
-export async function getPnL(account_name: string): Promise<number[] []> {
+export async function accountPnl(account_name: string): Promise<number[] []> {
   let snapshot = await client.accountSummary([], account_name)
   if (!snapshot) {
     throw new CustomFunctions.Error(
@@ -305,7 +300,7 @@ export async function getPnL(account_name: string): Promise<number[] []> {
  * @returns Account balances
  * @volatile
  */
-export async function getAccountBalance(account_name: string): Promise<number> {
+export async function accountBalance(account_name: string): Promise<number> {
   let snapshot = await client.accountSummary([], account_name)
   if (!snapshot) {
     throw new CustomFunctions.Error(
