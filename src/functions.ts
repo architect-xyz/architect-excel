@@ -81,10 +81,6 @@ export async function initializeClient() : Promise<string> {
   config.apiKey = apiKey;
   config.apiSecret = apiSecret;
 
-  if (apiKey == "PVWHDYUzQjOgIqU0FHxRTi5B") {
-    // for msft excel add-in testing
-    config.tradingMode = 'paper';
-  }
   client = create(config);
 
   try {
@@ -95,10 +91,10 @@ export async function initializeClient() : Promise<string> {
  }
 
 /**
- * Get the bid/ask and last price of a market
+ * Get the bid/ask and last price of a market.
  * @customfunction
- * @param symbol Market symbol
- * @param venue Market venue
+ * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
+ * @param venue Market venue, e.g. "CME"
  * @returns The bbo prices of the given market
  * @volatile
  */
@@ -125,9 +121,10 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
 
 
 /**
- * Fetch market snapshot and populate Excel worksheet
+ * Get the mid price of a the given market.
  * @customfunction
- * @param symbol Market symbol
+ * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
+ * @param venue Market venue, e.g. "CME"
  * @returns The mid market price of the given market
  * @volatile
  */
@@ -146,8 +143,8 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
 /**
  * Get the bid/ask/last price and size of a market
  * @customfunction
- * @param symbol Market symbol
- * @param venue Market venue
+ * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
+ * @param venue Market venue, e.g. "CME"
  * @returns The ticker information: bid price, bid size, ask price, ask size, last price, last size
  * @volatile
  */
@@ -179,7 +176,6 @@ export async function marketTicker(symbol: string, venue: string): Promise<numbe
 /**
  * Get accounts
  * @customfunction
- * @param [header] add the header
  * @returns List of accounts
  * @volatile
  */
@@ -216,15 +212,14 @@ export async function accountList(): Promise<string[][]> {
   }
 }
 
-
 /**
  * Get Positions
  * @customfunction
- * @param account_name Account name
+ * @param account_name Account name, gotten from accountList function.
  * @returns The position information
  * @volatile
  */
-export async function accountPositions(account_name: string): Promise<string [] []> {
+export async function accountPositions(account_name: string): Promise<string[][]> {
   let snapshot = await client.accountSummary([], account_name)
   if (!snapshot) {
     throw new CustomFunctions.Error(
@@ -233,26 +228,31 @@ export async function accountPositions(account_name: string): Promise<string [] 
     )
   }
 
-  let timestamp: string = snapshot.timestamp;
-
-  let breakEvenPrice: string[] = [];
-  let costBasis: string[] = [];
-  let liquidationPrice: string[] = [];
-  let symbol: string[] = [];
-  let qty: string[] = [];
-  let tradeTime: string[] = [];
-
-  snapshot.positions.forEach (position => {
-    breakEvenPrice.push(position.breakEvenPrice ?? "NaN")
-    costBasis.push(position.costBasis ?? "NaN")
-    liquidationPrice.push(position.liquidationPrice ?? "NaN")
-    symbol.push(position.symbol)
-    qty.push(position.quantity)
-    tradeTime.push(position.tradeTime ?? "")
-  })
-
   try {
-    return [[snapshot.timestamp, ...Array(breakEvenPrice.length - 1).fill("")], breakEvenPrice, costBasis, liquidationPrice, symbol, qty, tradeTime]
+    const headers = [
+      "Symbol",
+      "Quantity",
+      "Break Even Price",
+      "Cost Basis",
+      "Liquidation Price",
+      "Trade Time"
+    ];
+    const rows: string[][] = [[snapshot.timestamp, ...Array(headers.length - 1).fill("")]];
+
+    rows.push(headers);
+
+    snapshot.positions.forEach(position => {
+      rows.push([
+        position.symbol,
+        position.quantity,
+        position.breakEvenPrice ?? "NaN",
+        position.costBasis ?? "NaN",
+        position.liquidationPrice ?? "NaN",
+        position.tradeTime ?? ""
+      ]);
+    });
+
+    return rows;
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -262,11 +262,12 @@ export async function accountPositions(account_name: string): Promise<string [] 
 }
 
 
+
 /**
  * Get Daily PnL
  * @customfunction
- * @param account_name Account name
- * @returns account pnl
+ * @param account_name Account name, gotten from accountList function.
+ * @returns Account Pnl information: cash excess, equity, position margin, purchasing power, realized pnl, unrealized pnl, total margin, yesterday equity
  * @volatile
  */
 export async function accountPnl(account_name: string): Promise<number[] []> {
@@ -297,9 +298,9 @@ export async function accountPnl(account_name: string): Promise<number[] []> {
 }
 
 /**
- * Get Account Balance
+ * Get Account Balance.
  * @customfunction
- * @param account_name Account name
+ * @param account_name Account name, gotten from accountList function.
  * @returns Account balances
  * @volatile
  */

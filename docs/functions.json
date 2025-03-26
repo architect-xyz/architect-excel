@@ -14,7 +14,7 @@
             }
         },
         {
-            "description": "Get the bid/ask and last price of a market",
+            "description": "Get the bid/ask and last price of a market.",
             "id": "MARKETBBO",
             "name": "MARKETBBO",
             "options": {
@@ -22,12 +22,12 @@
             },
             "parameters": [
                 {
-                    "description": "Market symbol",
+                    "description": "Market symbol, e.g. \"ES 20250620 CME Future\"",
                     "name": "symbol",
                     "type": "string"
                 },
                 {
-                    "description": "Market venue",
+                    "description": "Market venue, e.g. \"CME\"",
                     "name": "venue",
                     "type": "string"
                 }
@@ -38,7 +38,7 @@
             }
         },
         {
-            "description": "Fetch market snapshot and populate Excel worksheet",
+            "description": "Get the mid price of a the given market.",
             "id": "MARKETMID",
             "name": "MARKETMID",
             "options": {
@@ -46,11 +46,12 @@
             },
             "parameters": [
                 {
-                    "description": "Market symbol",
+                    "description": "Market symbol, e.g. \"ES 20250620 CME Future\"",
                     "name": "symbol",
                     "type": "string"
                 },
                 {
+                    "description": "Market venue, e.g. \"CME\"",
                     "name": "venue",
                     "type": "string"
                 }
@@ -68,12 +69,12 @@
             },
             "parameters": [
                 {
-                    "description": "Market symbol",
+                    "description": "Market symbol, e.g. \"ES 20250620 CME Future\"",
                     "name": "symbol",
                     "type": "string"
                 },
                 {
-                    "description": "Market venue",
+                    "description": "Market venue, e.g. \"CME\"",
                     "name": "venue",
                     "type": "string"
                 }
@@ -105,7 +106,7 @@
             },
             "parameters": [
                 {
-                    "description": "Account name",
+                    "description": "Account name, gotten from accountList function.",
                     "name": "account_name",
                     "type": "string"
                 }
@@ -124,7 +125,7 @@
             },
             "parameters": [
                 {
-                    "description": "Account name",
+                    "description": "Account name, gotten from accountList function.",
                     "name": "account_name",
                     "type": "string"
                 }
@@ -135,7 +136,7 @@
             }
         },
         {
-            "description": "Get Account Balance",
+            "description": "Get Account Balance.",
             "id": "ACCOUNTBALANCE",
             "name": "ACCOUNTBALANCE",
             "options": {
@@ -143,7 +144,7 @@
             },
             "parameters": [
                 {
-                    "description": "Account name",
+                    "description": "Account name, gotten from accountList function.",
                     "name": "account_name",
                     "type": "string"
                 }
