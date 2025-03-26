@@ -1,12 +1,12 @@
 # architect-excel
-Excel plugin to access Architect backend via the Typescript API
+Excel Add-In to access Architect backend via the Typescript API
 https://github.com/architect-xyz/architect-ts
 
 https://architect-xyz.github.io/architect-excel/
 
 
 ## Lower Latency
-For clients needing a lower latency plugin in C#, please contact support@architect.co
+For clients needing a lower latency add-in in C#, please contact support@architect.co
 
 ## For Maintainers
 

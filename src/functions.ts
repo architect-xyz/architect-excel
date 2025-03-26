@@ -1,4 +1,4 @@
-// Excel Plugin Example: Query Backend API Using TypeScript
+// Excel Add-in Example: Query Backend API Using TypeScript
 
 
 /*

@@ -93,12 +93,12 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="Functions.Namespace" DefaultValue="Architect"/>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with the Architect Excel add-in!"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with the Architect Excel Add-in!"/>
         <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Architect Input API Key"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="The Architect Excel add-in loaded successfully. Go to the HOME tab and click the 'Architect Input API Key' button to get started."/>
+        <bt:String id="GetStarted.Description" DefaultValue="The Architect Excel Add-in loaded successfully. Go to the HOME tab and click the 'Architect Input API Key' button to get started."/>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Task Pane"/>
       </bt:LongStrings>
     </Resources>

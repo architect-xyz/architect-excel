@@ -1,7 +1,7 @@
 {
   "name": "architect-excel",
   "version": "1.0.0",
-  "description": "Excel plugin to access Architect backend via the Typescript API https://github.com/architect-xyz/architect-ts",
+  "description": "Excel Add-in to access Architect backend via the Typescript API https://github.com/architect-xyz/architect-ts",
   "main": "index.js",
   "engines": {
     "node": ">=22",
