@@ -243,7 +243,7 @@ export async function accountPositions(account_name: string): Promise<string [] 
     liquidationPrice.push(position.liquidationPrice ?? "NaN")
     symbol.push(position.symbol)
     qty.push(position.quantity)
-    tradeTime.push(position.tradeTime ? new Date(position.tradeTime).toLocaleString() : "")
+    tradeTime.push(position.tradeTime ?? "")
   })
 
   try {
