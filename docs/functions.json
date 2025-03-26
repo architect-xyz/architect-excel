@@ -90,14 +90,7 @@
             "options": {
                 "volatile": true
             },
-            "parameters": [
-                {
-                    "description": "add the header",
-                    "name": "header",
-                    "optional": true,
-                    "type": "boolean"
-                }
-            ],
+            "parameters": [],
             "result": {
                 "dimensionality": "matrix",
                 "type": "string"

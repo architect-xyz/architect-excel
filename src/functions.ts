@@ -178,7 +178,7 @@ export async function marketTicker(symbol: string, venue: string): Promise<numbe
  * @returns List of accounts
  * @volatile
  */
-export async function accountList(header?: boolean): Promise<string[][]> {
+export async function accountList(): Promise<string[][]> {
   const snapshot = await client.accounts([]);
 
   if (!snapshot) {
@@ -190,9 +190,7 @@ export async function accountList(header?: boolean): Promise<string[][]> {
 
   const rows: string [][] = [];
 
-  if (header) {
-    rows.push(["Account Name", "Trader", "Trade Permission", "View Permission"]);
-  }
+  rows.push(["Account Name", "Trader", "Trade Permission", "View Permission"]);
 
   snapshot.forEach(account => {
     rows.push([
