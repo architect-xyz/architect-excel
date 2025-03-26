@@ -10,7 +10,7 @@
   <HighResolutionIconUrl DefaultValue="https://architect-xyz.github.io/architect-excel/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://www.architect.co"/>
   <AppDomains>
-    <AppDomain>"https://www.architect.co"</AppDomain>
+    <AppDomain>"https://architect-xyz.github.io/architect-excel"</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
