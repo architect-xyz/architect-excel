@@ -1,5 +1,5 @@
 # architect-excel
-Excel Add-In to access Architect backend via the Typescript API
+An Excel Add-In to access Architect backend via the Typescript API
 https://github.com/architect-xyz/architect-ts
 
 For users of the Architect trading platform who want to access some of the trading functionality via Excel.

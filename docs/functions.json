@@ -155,6 +155,7 @@
         },
         {
             "description": "Search symbols by market name",
+            "helpUrl": "https://www.architect.com/docs/functions.html#searchSymbols",
             "id": "SEARCHSYMBOLS",
             "name": "SEARCHSYMBOLS",
             "parameters": [

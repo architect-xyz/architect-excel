@@ -7,15 +7,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="header-container"></div>
+    <script>
+      fetch('header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('header-container').innerHTML = html;
+        });
+    </script>
     <div class="container">
-        <h1>architect-excel Install Instructions</h1>
-        <p>Follow these steps to install the architect-excel add-in in Excel:</p>
+        <h1><a href="https://architect.co"><img src="assets/icon-32.png" alt="Architect Logo"></a> Architect Add-in for Excel Install Instructions</h1>
+        <p>Follow these steps to install the Architect Add-in for Excel:</p>
         <ol>
             <li>Open Excel and navigate to the <strong>Home</strong> tab.</li>
             <li>Click on <strong>Office Add-ins</strong> and then search for <strong>Architect Excel Add-in</strong>.</li>
             <li>Once installed, the add-in will appear in Excel’s <strong>Task Pane</strong> and is ready to use.</li>
         </ol>
         <p>For troubleshooting or further support, contact our support team via Slack or email support@architect.co.</p>
+        <p>Users with accounts can create an api key/secret <a href="https://app.architect.co/user/account">here</a>.<p>
     </div>
 </body>
 </html>
