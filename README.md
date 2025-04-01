@@ -1,4 +1,4 @@
-# architect-excel
+# Architect Add-in for Excel
 An Excel Add-In to access Architect backend via the Typescript API
 https://github.com/architect-xyz/architect-ts
 
