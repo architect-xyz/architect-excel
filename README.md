@@ -7,7 +7,7 @@ For users of the Architect trading platform who want to access some of the tradi
 This add-in allows Architect users to connect see prices, positions, balances, and pnl.
 Users should already have an account with Architect, along with API key / secret.
 
-https://architect-xyz.github.io/architect-excel/
+https://excel.architect.co
 
 
 ## Lower Latency
