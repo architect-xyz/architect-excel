@@ -44,6 +44,7 @@ export async function setStorageItem(key: string, value: string): Promise<void> 
  */
 export async function getStorageItem(key: string): Promise<string | null> {
   // Try using OfficeRuntime.storage first.
+  console.log("TEST A")
   if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
     try {
       return await OfficeRuntime.storage.getItem(key);
