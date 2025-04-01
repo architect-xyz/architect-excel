@@ -1,27 +1,14 @@
-// Excel Add-in Example: Query Backend API Using TypeScript
-
-
 /*
-important functions:
-close
-open
-day high
-day low
-
 Valid output types
-
 Primitive Types:
-
     String: Returns text values.​
     Number: Returns numerical values.​
     Boolean: Returns true or false.​
 
 Arrays:
-
     Array of Arrays: For multi-dimensional data, you can return a two-dimensional array (e.g., [[1, 2], [3, 4]]), which Excel will display across corresponding cell ranges.​
 
 Specialized Data Types:
-
     Entity: Represents complex data structures with properties and optional display metadata.​
     FormattedNumber: Allows returning numbers with specific formatting, such as currency or percentages.​
 */

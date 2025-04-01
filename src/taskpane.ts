@@ -26,10 +26,6 @@ Office.onReady(() => {
     return (field as string)?.trim() || '';
   }
 
-  function delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   async function handleFormSubmit(e: Event) {
     e.preventDefault();
 
@@ -41,8 +37,6 @@ Office.onReady(() => {
       setStatus('API Key and Secret are required.');
       return;
     }
-    await delay(1000);
-
     try {
       setStorageItem('ArchitectApiKey', apiKey);
       setStorageItem('ArchitectApiSecret', apiSecret);
