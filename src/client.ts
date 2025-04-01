@@ -53,3 +53,20 @@ export async function getStorageItem(key: string): Promise<string | null> {
     throw new Error('No available storage method to retrieve data.');
   }
 }
+
+export async function removeStorageItem(key: string): Promise<void> {
+  if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
+    await OfficeRuntime.storage.removeItem(key);
+  } else if (typeof localStorage !== 'undefined') {
+    try {
+      const partitionKey = Office?.context?.partitionKey;
+      const storageKey = partitionKey ? `${partitionKey}${key}` : key;
+      localStorage.removeItem(storageKey);
+    } catch (error) {
+      console.error('Failed to remove item from localStorage:', error);
+      throw error;
+    }
+  } else {
+    throw new Error('No available storage method to remove data.');
+  }
+}

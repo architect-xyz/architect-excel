@@ -1,37 +1,57 @@
-import { initializeClient} from "./functions";
-import { setStorageItem } from "./client";
+import { initializeClient } from "./functions";
+import { setStorageItem, removeStorageItem } from "./client";
 
-Office.onReady(async () => {
+Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement;
+  const logoutButton = document.getElementById('logout-button') as HTMLButtonElement;
+  const status = document.getElementById('status')!;
 
-  function cleanField(field: FormDataEntryValue | null)  : string {
-    return ((field as string) || '').trim();
+  form.addEventListener('submit', handleFormSubmit);
+  logoutButton?.addEventListener('click', handleLogout);
+
+  function cleanField(field: FormDataEntryValue | null): string {
+    return (field as string)?.trim() || '';
   }
 
-  form.addEventListener('submit', async (e) => {
+  async function handleFormSubmit(e: Event) {
     e.preventDefault();
+
     const formData = new FormData(form);
     const apiKey = cleanField(formData.get('apiKey'));
     const apiSecret = cleanField(formData.get('apiSecret'));
 
-    const status = document.getElementById('status')!;
-
     if (!apiKey || !apiSecret) {
-      status.textContent = 'API Key and Secret are required.';
+      setStatus('API Key and Secret are required.');
       return;
     }
 
     try {
       setStorageItem('ArchitectApiKey', apiKey);
       setStorageItem('ArchitectApiSecret', apiSecret);
-      let success = await initializeClient();
-      if (success) {
-        status.textContent = 'Credentials saved! Client initialized!';
-      } else {
-        status.textContent = 'Credentials saved! However, Client was NOT successfully initialized!';
-      }
+
+      const success = await initializeClient();
+      setStatus(success
+        ? 'Credentials saved! Client initialized!'
+        : 'Credentials saved! However, Client was NOT successfully initialized!');
     } catch (err) {
-      status.textContent = `Error: ${(err as Error).message}`;
+      setStatus(`Error: ${(err as Error).message}`);
     }
-  });
+  }
+
+  async function handleLogout(e: Event) {
+    e.preventDefault();
+
+    try {
+      removeStorageItem('ArchitectApiKey');
+      removeStorageItem('ArchitectApiSecret');
+      form.reset();
+      setStatus('Logged out!');
+    } catch (err) {
+      setStatus(`Error: ${(err as Error).message}`);
+    }
+  }
+
+  function setStatus(message: string) {
+    status.textContent = message;
+  }
 });
