@@ -1,15 +1,6 @@
 import { initializeClient } from "./functions";
 import { setStorageItem, removeStorageItem } from "./client";
 
-// Catch any unexpected global errors or promise rejections
-window.addEventListener('unhandledrejection', event => {
-  console.error('Unhandled promise rejection:', event.reason);
-});
-
-window.onerror = (msg, url, lineNo, columnNo, error) => {
-  console.error('Global JS error:', msg, error);
-};
-
 Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement | null;
   const logoutButton = document.getElementById('logout-button') as HTMLButtonElement | null;
@@ -35,6 +26,10 @@ Office.onReady(() => {
     return (field as string)?.trim() || '';
   }
 
+  function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   async function handleFormSubmit(e: Event) {
     e.preventDefault();
 
@@ -46,6 +41,7 @@ Office.onReady(() => {
       setStatus('API Key and Secret are required.');
       return;
     }
+    await delay(1000);
 
     try {
       setStorageItem('ArchitectApiKey', apiKey);
