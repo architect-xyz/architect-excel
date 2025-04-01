@@ -25,6 +25,11 @@ npm install
 npx webpack
 ```
 
-### To Test
+### To Validate manifest.xml
+
+office-addin-manifest validate docs/manifest.xml
+
+
+#### Sideloading App
 npx office-addin-debugging start docs/manifest.xml
 npx office-addin-debugging stop docs/manifest.xml
