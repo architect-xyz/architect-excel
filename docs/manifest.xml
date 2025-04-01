@@ -38,9 +38,6 @@
           </ExtensionPoint>
         </AllFormFactors>
         <DesktopFormFactor>
-          <Runtimes>
-            <Runtime resid="Taskpane.Url" lifetime="long"/>
-          </Runtimes>
           <GetStarted>
             <Title resid="GetStarted.Title"/>
             <Description resid="GetStarted.Description"/>
