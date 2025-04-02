@@ -58,6 +58,7 @@ Office.onReady(() => {
       await setStorageItem('ArchitectApiKey', "");
       await setStorageItem('ArchitectApiSecret', "");
       safeForm.reset();
+      await initializeClient(); // Reinitialize the client to clear any cached credentials
       setStatus('Logged out! The Add-in will no longer have access to your credentials on the next restart.');
     } catch (err) {
       console.error("Logout failed:", err);
