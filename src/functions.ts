@@ -33,6 +33,16 @@ let client: Client = (new Proxy({}, {
 }) as Client);
 
 
+export function remakeClient(api_key: string, api_secret: string) {
+  config.apiKey = api_key;
+  config.apiSecret = api_secret;
+
+  client = create(config);
+  console.log("Client recreated with new config:", config);
+}
+
+
+
 /**
  * Initialize the client with user-provided API key and secret.
  * This should run when the user enters their API key/secret.
@@ -66,10 +76,7 @@ export async function initializeClient() : Promise<string> {
     )
   }
 
-  config.apiKey = apiKey;
-  config.apiSecret = apiSecret;
-
-  client = create(config);
+  remakeClient(apiKey, apiSecret);
 
   try {
     console.log("Checking for client initialization...");

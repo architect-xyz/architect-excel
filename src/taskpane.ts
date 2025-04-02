@@ -1,5 +1,5 @@
-import { initializeClient } from "./functions";
-import { setStorageItem } from "./client";
+import { initializeClient, remakeClient } from "./functions";
+import { config, removeStorageItem, setStorageItem } from "./client";
 
 Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement | null;
@@ -55,10 +55,10 @@ Office.onReady(() => {
     e.preventDefault();
 
     try {
-      await setStorageItem('ArchitectApiKey', "");
-      await setStorageItem('ArchitectApiSecret', "");
+      await removeStorageItem('ArchitectApiKey');
+      await removeStorageItem('ArchitectApiSecret');
       safeForm.reset();
-      await initializeClient(); // Reinitialize the client to clear any cached credentials
+      remakeClient("", "")
       setStatus('Logged out! The Add-in will no longer have access to your credentials on the next restart.');
     } catch (err) {
       console.error("Logout failed:", err);
