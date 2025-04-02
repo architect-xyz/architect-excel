@@ -1,5 +1,5 @@
 import { initializeClient, remakeClient } from "./functions";
-import { config, removeStorageItem, setStorageItem } from "./client";
+import { removeStorageItem, setStorageItem } from "./client";
 
 Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement | null;
