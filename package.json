@@ -7,8 +7,20 @@
     "node": ">=22",
     "npm": "10"
   },
+  "config": {
+    "app_to_debug": "excel",
+    "app_type_to_debug": "desktop"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx webpack",
+    "dev-server": "webpack serve --mode development",
+    "lint": "office-addin-lint check",
+    "lint:fix": "office-addin-lint fix",
+    "prettier": "office-addin-lint prettier",
+    "start": "office-addin-debugging start docs/manifest.xml",
+    "stop": "office-addin-debugging stop docs/manifest.xml",
+    "validate": "office-addin-manifest validate manifest.xml",
+    "watch": "webpack --mode development --watch"
   },
   "repository": {
     "type": "git",
@@ -38,5 +50,10 @@
     "@microsoft/office-js": "1.1",
     "office-js": "^0.1.0"
   },
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.6.0",
+  "prettier": "office-addin-prettier-config",
+  "browserslist": [
+    "last 2 versions",
+    "ie 11"
+  ]
 }
