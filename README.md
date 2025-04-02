@@ -33,3 +33,9 @@ office-addin-manifest validate manifest.xml
 #### Sideloading App
 npx office-addin-debugging start manifest.xml
 npx office-addin-debugging stop manifest.xml
+
+
+
+#### TO DO:
+
+- use web workers? https://github.com/OfficeDev/Office-Add-in-samples/tree/main/Samples/excel-add-in-custom-functions-using-web-workers
