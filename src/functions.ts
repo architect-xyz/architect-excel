@@ -71,6 +71,7 @@ export async function initializeClient() : Promise<string> {
 
   client = create(config);
 
+  console.log("Client initialized with API key and secret.");
   try {
     return await client.userEmail();
   } catch (error) {

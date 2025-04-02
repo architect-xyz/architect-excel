@@ -11,6 +11,7 @@
   <SupportUrl DefaultValue="https://excel.architect.co/functions_help.html"/>
   <AppDomains>
     <AppDomain>https://excel.architect.co</AppDomain>
+    <AppDomain>https://app.architect.co</AppDomain>
     <AppDomain>https://appsforoffice.microsoft.com</AppDomain>
   </AppDomains>
   <Hosts>
