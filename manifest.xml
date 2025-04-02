@@ -23,6 +23,9 @@
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Hosts>
       <Host xsi:type="Workbook">
+        <Runtimes>
+          <Runtime resid="Functions.Page.Url" lifetime="long" />
+        </Runtimes>
         <AllFormFactors>
           <ExtensionPoint xsi:type="CustomFunctions">
             <Script>
