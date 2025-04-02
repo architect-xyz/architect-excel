@@ -72,6 +72,7 @@ export async function initializeClient() : Promise<string> {
   client = create(config);
 
   try {
+    console.log("Checking for client initialization...");
     let email = await client.userEmail();
     console.log("Client initialized successfully. User email:", email);
     return email;
