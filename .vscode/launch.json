@@ -4,7 +4,6 @@
     {
       "name": "Excel Desktop (Edge Chromium)",
       "type": "chrome",
-      "request": "attach",
       "url": "https://excel.architect.co/taskpane.html",
       "webRoot": "${workspaceRoot}/docs",
       "preLaunchTask": "Debug: Excel Desktop",
@@ -13,7 +12,6 @@
     {
       "name": "Excel Desktop (Edge Legacy)",
       "type": "msedge",
-      "request": "attach",
       "url": "https://excel.architect.co/taskpane.html",
       "webRoot": "${workspaceRoot}/docs",
       "preLaunchTask": "Debug: Excel Desktop",
