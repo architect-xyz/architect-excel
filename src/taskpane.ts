@@ -38,8 +38,8 @@ Office.onReady(() => {
       return;
     }
     try {
-      setStorageItem('ArchitectApiKey', apiKey);
-      setStorageItem('ArchitectApiSecret', apiSecret);
+      await setStorageItem('ArchitectApiKey', apiKey);
+      await setStorageItem('ArchitectApiSecret', apiSecret);
 
       const success = await initializeClient();
       setStatus(success
@@ -55,8 +55,8 @@ Office.onReady(() => {
     e.preventDefault();
 
     try {
-      removeStorageItem('ArchitectApiKey');
-      removeStorageItem('ArchitectApiSecret');
+      await removeStorageItem('ArchitectApiKey');
+      await removeStorageItem('ArchitectApiSecret');
       safeForm.reset();
       setStatus('Logged out!');
     } catch (err) {
