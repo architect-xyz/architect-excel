@@ -27,9 +27,9 @@ npx webpack
 
 ### To Validate manifest.xml
 
-office-addin-manifest validate docs/manifest.xml
+office-addin-manifest validate manifest.xml
 
 
 #### Sideloading App
-npx office-addin-debugging start docs/manifest.xml
-npx office-addin-debugging stop docs/manifest.xml
+npx office-addin-debugging start manifest.xml
+npx office-addin-debugging stop manifest.xml
