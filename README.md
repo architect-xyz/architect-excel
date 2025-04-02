@@ -39,3 +39,13 @@ npx office-addin-debugging stop manifest.xml
 #### TO DO:
 
 - use web workers? https://github.com/OfficeDev/Office-Add-in-samples/tree/main/Samples/excel-add-in-custom-functions-using-web-workers
+
+
+
+#### Helpful Resources:
+
+Shared Runtime:
+https://github.com/OfficeDev/Office-Add-in-samples/blob/main/Samples/excel-shared-runtime-global-state/manifest.xml
+https://learn.microsoft.com/en-us/office/dev/add-ins/develop/configure-your-add-in-to-use-a-shared-runtime?tabs=xmlmanifest
+
+

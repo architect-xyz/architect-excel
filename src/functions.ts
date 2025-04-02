@@ -38,7 +38,7 @@ let client: Client = (new Proxy({}, {
  * This should run when the user enters their API key/secret.
  * @customfunction
  * @returns The user's email address
- * @helpurl https://www.architect.co/docs/functions.html#INITIALIZECLIENT
+ * @helpurl https://excel.architect.co/docs/functions.html#INITIALIZECLIENT
  * @volatile
  */
 export async function initializeClient() : Promise<string> {
@@ -87,7 +87,7 @@ export async function initializeClient() : Promise<string> {
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
  * @returns The bbo prices of the given market
- * @helpurl https://www.architect.co/docs/functions.html#MARKETBBO
+ * @helpurl https://excel.architect.co/docs/functions.html#MARKETBBO
  * @volatile
  */
 export async function marketBBO(symbol: string, venue: string): Promise<number[] []> {
@@ -117,7 +117,7 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
  * @returns The mid market price of the given market
- * @helpurl https://www.architect.co/docs/functions.html#MARKETMID
+ * @helpurl https://excel.architect.co/docs/functions.html#MARKETMID
  * @volatile
  */
 export async function marketMid(symbol: string, venue: string): Promise<number> {
@@ -136,7 +136,7 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
  * @returns The ticker information: bid price, bid size, ask price, ask size, last price, last size
- * @helpurl https://www.architect.co/docs/functions.html#MARKETTICKER
+ * @helpurl https://excel.architect.co/docs/functions.html#MARKETTICKER
  * @volatile
  */
 export async function marketTicker(symbol: string, venue: string): Promise<number[] []> {
@@ -168,7 +168,7 @@ export async function marketTicker(symbol: string, venue: string): Promise<numbe
  * Get accounts for a given API key/secret.
  * @customfunction
  * @returns List of accounts
- * @helpurl https://www.architect.co/docs/functions.html#ACCOUNTLIST
+ * @helpurl https://excel.architect.co/docs/functions.html#ACCOUNTLIST
  * @volatile
  */
 export async function accountList(): Promise<string[][]> {
@@ -209,7 +209,7 @@ export async function accountList(): Promise<string[][]> {
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @returns The position information
- * @helpurl https://www.architect.co/docs/functions.html#ACCOUNTPOSITIONS
+ * @helpurl https://excel.architect.co/docs/functions.html#ACCOUNTPOSITIONS
  * @volatile
  */
 export async function accountPositions(account_name: string): Promise<string[][]> {
@@ -261,7 +261,7 @@ export async function accountPositions(account_name: string): Promise<string[][]
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @returns Account Pnl information: cash excess, equity, position margin, purchasing power, realized pnl, unrealized pnl, total margin, yesterday equity
- * @helpurl https://www.architect.co/docs/functions.html#ACCOUNTPNL
+ * @helpurl https://excel.architect.co/docs/functions.html#ACCOUNTPNL
  * @volatile
  */
 export async function accountPnl(account_name: string): Promise<number[] []> {
@@ -296,7 +296,7 @@ export async function accountPnl(account_name: string): Promise<number[] []> {
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @returns Account balances
- * @helpurl https://www.architect.co/docs/functions.html#ACCOUNTBALANCE
+ * @helpurl https://excel.architect.co/docs/functions.html#ACCOUNTBALANCE
  * @volatile
  */
 export async function accountBalance(account_name: string): Promise<number> {
@@ -331,7 +331,7 @@ export async function accountBalance(account_name: string): Promise<number> {
 /**
  * Search symbols by market name
  * @param market_name Market name, e.g. "ES", "NQ", "RTY"
- * @helpurl https://www.architect.co/docs/functions.html#SEARCHSYMBOLS
+ * @helpurl https://excel.architect.co/docs/functions.html#SEARCHSYMBOLS
  * @customfunction 
  */
 export async function searchSymbols(market_name: string): Promise<string [] []> {

@@ -3,7 +3,7 @@
     "functions": [
         {
             "description": "Initialize the client with user-provided API key and secret.\nThis should run when the user enters their API key/secret.",
-            "helpUrl": "https://www.architect.co/docs/functions.html#INITIALIZECLIENT",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#INITIALIZECLIENT",
             "id": "INITIALIZECLIENT",
             "name": "INITIALIZECLIENT",
             "options": {
@@ -16,7 +16,7 @@
         },
         {
             "description": "Get the bid/ask and last price of a market.",
-            "helpUrl": "https://www.architect.co/docs/functions.html#MARKETBBO",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#MARKETBBO",
             "id": "MARKETBBO",
             "name": "MARKETBBO",
             "options": {
@@ -41,7 +41,7 @@
         },
         {
             "description": "Get the mid price of a the given market.",
-            "helpUrl": "https://www.architect.co/docs/functions.html#MARKETMID",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#MARKETMID",
             "id": "MARKETMID",
             "name": "MARKETMID",
             "options": {
@@ -65,7 +65,7 @@
         },
         {
             "description": "Get the bid/ask/last price and size of a market",
-            "helpUrl": "https://www.architect.co/docs/functions.html#MARKETTICKER",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#MARKETTICKER",
             "id": "MARKETTICKER",
             "name": "MARKETTICKER",
             "options": {
@@ -90,7 +90,7 @@
         },
         {
             "description": "Get accounts for a given API key/secret.",
-            "helpUrl": "https://www.architect.co/docs/functions.html#ACCOUNTLIST",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTLIST",
             "id": "ACCOUNTLIST",
             "name": "ACCOUNTLIST",
             "options": {
@@ -104,7 +104,7 @@
         },
         {
             "description": "Get Positions",
-            "helpUrl": "https://www.architect.co/docs/functions.html#ACCOUNTPOSITIONS",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTPOSITIONS",
             "id": "ACCOUNTPOSITIONS",
             "name": "ACCOUNTPOSITIONS",
             "options": {
@@ -124,7 +124,7 @@
         },
         {
             "description": "Get Daily PnL",
-            "helpUrl": "https://www.architect.co/docs/functions.html#ACCOUNTPNL",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTPNL",
             "id": "ACCOUNTPNL",
             "name": "ACCOUNTPNL",
             "options": {
@@ -144,7 +144,7 @@
         },
         {
             "description": "Get Account Balance.",
-            "helpUrl": "https://www.architect.co/docs/functions.html#ACCOUNTBALANCE",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTBALANCE",
             "id": "ACCOUNTBALANCE",
             "name": "ACCOUNTBALANCE",
             "options": {
@@ -163,7 +163,7 @@
         },
         {
             "description": "Search symbols by market name",
-            "helpUrl": "https://www.architect.co/docs/functions.html#SEARCHSYMBOLS",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#SEARCHSYMBOLS",
             "id": "SEARCHSYMBOLS",
             "name": "SEARCHSYMBOLS",
             "parameters": [
