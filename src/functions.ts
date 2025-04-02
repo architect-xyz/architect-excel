@@ -71,9 +71,10 @@ export async function initializeClient() : Promise<string> {
 
   client = create(config);
 
-  console.log("Client initialized with API key and secret.");
   try {
-    return await client.userEmail();
+    let email = await client.userEmail();
+    console.log("Client initialized successfully. User email:", email);
+    return email;
   } catch (error) {
     return "Client failed to initialize. Please check your API key and secret.";
   }
