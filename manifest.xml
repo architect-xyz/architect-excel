@@ -11,7 +11,7 @@
   <SupportUrl DefaultValue="https://www.architect.co"/>
   <AppDomains>
     <AppDomain>https://excel.architect.co</AppDomain>
-    <AppDomain>https://architect.co</AppDomain>
+    <AppDomain>https://appsforoffice.microsoft.com</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Workbook"/>
