@@ -15,7 +15,6 @@
       "type": "msedge",
       "request": "attach",
       "url": "https://excel.architect.co/taskpane.html",
-      "timeout": 600000,
       "webRoot": "${workspaceRoot}/docs",
       "preLaunchTask": "Debug: Excel Desktop",
       "postDebugTask": "Stop Debug"
