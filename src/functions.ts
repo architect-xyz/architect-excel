@@ -79,11 +79,11 @@ export async function initializeClient() : Promise<string> {
   remakeClient(apiKey, apiSecret);
 
   try {
-    console.log("Checking for client initialization...");
     let email = await client.userEmail();
     console.log("Client initialized successfully. User email:", email);
     return email;
   } catch (error) {
+    console.error("Client failed to initialize. Please check your API key and secret: ", error);
     return "Client failed to initialize. Please check your API key and secret.";
   }
  }
