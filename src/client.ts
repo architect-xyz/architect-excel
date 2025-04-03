@@ -17,11 +17,13 @@ export async function setStorageItem(key: string, value: string): Promise<void> 
   if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
     try {
       await OfficeRuntime.storage.setItem(key, value);
+      console.log("Data saved to OfficeRuntime.storage.");
       return;
     } catch (error) {
       console.warn("OfficeRuntime.storage.setItem failed, falling back to localStorage.", error);
     }
   }
+  console.log("Using localStorage to save data.");
   
   // Fallback to localStorage if available.
   if (typeof localStorage !== 'undefined') {
@@ -29,6 +31,7 @@ export async function setStorageItem(key: string, value: string): Promise<void> 
       const partitionKey = Office?.context?.partitionKey;
       const storageKey = partitionKey ? `${partitionKey}${key}` : key;
       localStorage.setItem(storageKey, value);
+      console.log("Data saved to localStorage.");
       return;
     } catch (error) {
       console.error('Failed to set item in localStorage:', error);
@@ -51,18 +54,22 @@ export async function getStorageItem(key: string): Promise<string | null> {
       console.warn("OfficeRuntime.storage.getItem failed, falling back to localStorage.", error);
     }
   }
+
+  console.log("No OfficeRuntime.storage available, falling back to localStorage.");
   
   // Fallback to localStorage if available.
   if (typeof localStorage !== 'undefined') {
     try {
       const partitionKey = Office?.context?.partitionKey;
       const storageKey = partitionKey ? `${partitionKey}${key}` : key;
+      console.log("Using localStorage to retrieve data.");
       return localStorage.getItem(storageKey);
     } catch (error) {
       console.error('Failed to get item from localStorage:', error);
       throw error;
     }
   }
+  console.log("No available storage method to retrieve data.");
   
   throw new Error('No available storage method to retrieve data.');
 }
