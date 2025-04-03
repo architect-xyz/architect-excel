@@ -41,9 +41,9 @@ Office.onReady(() => {
       await setStorageItem('ArchitectApiKey', apiKey);
       await setStorageItem('ArchitectApiSecret', apiSecret);
 
-      const success = await initializeClient();
-      setStatus(success
-        ? 'Credentials saved! Client initialized!'
+      const email = await initializeClient();
+      setStatus(email
+        ? 'Credentials saved! Client initialized with email: ' + email + '.'
         : 'Credentials saved, but client failed to initialize.');
     } catch (err) {
       console.error("Initialization failed:", err);
