@@ -348,6 +348,29 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
   return result;
 }
 
+/**
+ * Test function that just returns the value of the API key.
+ * @customfunction
+ */
+export async function testFunction(): Promise<string> {
+  let apiKey: string | null;
+  try {
+    apiKey = await getStorageItem('ArchitectApiKey');
+  } catch (error) {
+    console.log("Error accessing storage.");
+    apiKey = null;
+  }
+
+  if (!apiKey) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "api_key has not been input"
+    )
+  }
+
+  return apiKey;
+}
+
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Excel) {
     try {
