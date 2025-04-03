@@ -38,7 +38,7 @@ export function remakeClient(api_key: string, api_secret: string) {
   config.apiSecret = api_secret;
 
   client = create(config);
-  console.log("Client recreated with new config:", config);
+  console.log("Client recreated with new config."); 
 }
 
 

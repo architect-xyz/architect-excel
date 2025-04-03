@@ -59,7 +59,7 @@ Office.onReady(() => {
       await removeStorageItem('ArchitectApiSecret');
       safeForm.reset();
       remakeClient("", "")
-      setStatus('Logged out! The Add-in will no longer have access to your credentials on the next restart.');
+      setStatus('Logged out!');
     } catch (err) {
       console.error("Logout failed:", err);
       setStatus(`Error: ${(err as Error).message}`);
