@@ -84,7 +84,10 @@ export async function initializeClient() : Promise<string> {
     return email;
   } catch (error) {
     console.error("Client failed to initialize. Please check your API key and secret: ", error);
-    return "Client failed to initialize. Please check your API key and secret.";
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.invalidValue,
+      "Client failed to initialize. Please check your API key and secret."
+    )
   }
  }
 
