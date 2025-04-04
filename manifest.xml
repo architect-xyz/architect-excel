@@ -17,6 +17,11 @@
   <Hosts>
     <Host Name="Workbook"/>
   </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="SharedRuntime" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
   <DefaultSettings>
     <SourceLocation DefaultValue="https://excel.architect.co/taskpane.html"/>
   </DefaultSettings>
@@ -25,7 +30,7 @@
     <Hosts>
       <Host xsi:type="Workbook">
         <Runtimes>
-          <Runtime resid="Functions.Page.Url" lifetime="long" />
+          <Runtime resid="Taskpane.Url" lifetime="long" />
         </Runtimes>
         <AllFormFactors>
           <ExtensionPoint xsi:type="CustomFunctions">
@@ -33,7 +38,7 @@
               <SourceLocation resid="Functions.Script.Url"/>
             </Script>
             <Page>
-              <SourceLocation resid="Functions.Page.Url"/>
+              <SourceLocation resid="Taskpane.Url"/>
             </Page>
             <Metadata>
               <SourceLocation resid="Functions.Metadata.Url"/>
@@ -47,7 +52,7 @@
             <Description resid="GetStarted.Description"/>
             <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
           </GetStarted>
-          <FunctionFile resid="Functions.Page.Url"/>
+          <FunctionFile resid="Taskpane.Url"/>
           <ExtensionPoint xsi:type="PrimaryCommandSurface">
             <OfficeTab id="TabHome">
               <Group id="CommandsGroup">
