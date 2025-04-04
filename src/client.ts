@@ -9,12 +9,17 @@ let config: Config = {
 
 export { config };
 
+
+export async function setOfficeSetting(key: string, value: string): Promise<void> {
+  Office.context.document.settings
+}
+
 /**
  * Helper function to set an item in storage with fallback.
  */
 export async function setStorageItem(key: string, value: string): Promise<void> {
   // Try using OfficeRuntime.storage first.
-  if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
+  if (typeof OfficeRuntime !== 'undefined' && typeof OfficeRuntime.storage !== 'undefined') {
     try {
       await OfficeRuntime.storage.setItem(key, value);
       console.log("Data saved to OfficeRuntime.storage.");
@@ -47,7 +52,7 @@ export async function setStorageItem(key: string, value: string): Promise<void> 
  */
 export async function getStorageItem(key: string): Promise<string | null> {
   // Try using OfficeRuntime.storage first.
-  if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
+  if (typeof OfficeRuntime !== 'undefined' && typeof OfficeRuntime.storage !== 'undefined') {
     try {
       return await OfficeRuntime.storage.getItem(key);
     } catch (error) {
@@ -79,7 +84,7 @@ export async function getStorageItem(key: string): Promise<string | null> {
  */
 export async function removeStorageItem(key: string): Promise<void> {
   // Try using OfficeRuntime.storage first.
-  if (typeof Office !== 'undefined' && Office.context && typeof OfficeRuntime !== 'undefined' && OfficeRuntime.storage) {
+  if (typeof OfficeRuntime !== 'undefined' && typeof OfficeRuntime.storage !== 'undefined') {
     try {
       await OfficeRuntime.storage.removeItem(key);
       return;
