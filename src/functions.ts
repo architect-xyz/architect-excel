@@ -18,7 +18,7 @@ Specialized Data Types:
 /// <reference types="office-js" />
 
 import { create, Client } from '@afintech/sdk/env/browser';
-import { getStorageItem, config } from './client';
+import { getStorageItem, config, setStorageItem } from './client';
 import { Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
 
 
@@ -374,6 +374,22 @@ export async function testFunction(): Promise<string> {
   return apiKey;
 }
 
+
+
+/**
+ * Test function that just returns the value of the API key.
+ * @customfunction
+ */
+export async function testStorage(): Promise<void> {
+  let apiKey: string | null;
+  try {
+    await setStorageItem('ArchitectApiKey', "test");
+  } catch (error) {
+    console.log("Error accessing storage.");
+    apiKey = null;
+  }
+}
+
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Excel) {
     try {
@@ -381,6 +397,10 @@ Office.onReady(async (info) => {
       console.log('Client initialized using saved API key/secret');
     } catch (error) {
       console.log(error)
+    }
+
+    while (true) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
 });

@@ -186,6 +186,13 @@
             "result": {
                 "type": "string"
             }
+        },
+        {
+            "description": "Test function that just returns the value of the API key.",
+            "id": "TESTSTORAGE",
+            "name": "TESTSTORAGE",
+            "parameters": [],
+            "result": {}
         }
     ]
 }
