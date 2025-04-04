@@ -1,5 +1,4 @@
 import { initializeClient, remakeClient } from "./functions";
-import { removeStorageItem, setStorageItem } from "./client";
 
 Office.onReady(() => {
   const form = document.getElementById('api-form') as HTMLFormElement | null;
@@ -38,8 +37,7 @@ Office.onReady(() => {
       return;
     }
     try {
-      await setStorageItem('ArchitectApiKey', apiKey);
-      await setStorageItem('ArchitectApiSecret', apiSecret);
+      await OfficeRuntime.storage.setItems({'ArchitectApiKey': apiKey, 'ArchitectApiSecret': apiSecret});
 
       const email = await initializeClient();
       setStatus('Credentials saved! Client initialized with email: ' + email + '.');
@@ -53,8 +51,7 @@ Office.onReady(() => {
     e.preventDefault();
 
     try {
-      await removeStorageItem('ArchitectApiKey');
-      await removeStorageItem('ArchitectApiSecret');
+      await OfficeRuntime.storage.removeItems(['ArchitectApiKey', 'ArchitectApiSecret']);
       safeForm.reset();
       remakeClient("", "")
       setStatus('Logged out!');

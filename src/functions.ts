@@ -17,11 +17,16 @@ Specialized Data Types:
 /// <reference types="office-runtime" />
 /// <reference types="office-js" />
 
-import { create, Client } from '@afintech/sdk/env/browser';
-import { getStorageItem, config, setStorageItem } from './client';
+import { create, Client, Config } from '@afintech/sdk/env/browser';
 import { Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
 
 
+let config: Config = {
+  host: 'https://app.architect.co/',
+  apiKey: '',
+  apiSecret: '',
+  tradingMode: 'live',
+};
 
 let client: Client = (new Proxy({}, {
   get(_obj, _prop) {
@@ -41,8 +46,6 @@ export function remakeClient(api_key: string, api_secret: string) {
   console.log("Client recreated with new config."); 
 }
 
-
-
 /**
  * Initialize the client with user-provided API key and secret.
  * This should run when the user enters their API key/secret.
@@ -55,8 +58,15 @@ export async function initializeClient() : Promise<string> {
   let apiKey: string | null;
   let apiSecret: string | null;
   try {
-    apiKey = await getStorageItem('ArchitectApiKey');
-    apiSecret = await getStorageItem('ArchitectApiSecret');
+    const {
+      ArchitectApiKey = null,
+      ArchitectApiSecret = null,
+    } = await OfficeRuntime.storage.getItems(['ArchitectApiKey', 'ArchitectApiSecret']);
+
+    apiKey = ArchitectApiKey;
+    apiSecret = ArchitectApiSecret;
+
+    
   } catch (error) {
     console.log("Error accessing storage.");
     apiKey = null;
@@ -351,56 +361,11 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
   return result;
 }
 
-/**
- * Test function that just returns the value of the API key.
- * @customfunction
- */
-export async function testFunction(): Promise<string> {
-  let apiKey: string | null;
-  try {
-    apiKey = await getStorageItem('ArchitectApiKey');
-  } catch (error) {
-    console.log("Error accessing storage.");
-    apiKey = null;
-  }
-
-  if (!apiKey) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.invalidValue,
-      "api_key has not been input"
-    )
-  }
-
-  return apiKey;
-}
-
-
-
-/**
- * Test function that just returns the value of the API key.
- * @customfunction
- */
-export async function testStorage(): Promise<void> {
-  let apiKey: string | null;
-  try {
-    await setStorageItem('ArchitectApiKey', "test");
-  } catch (error) {
-    console.log("Error accessing storage.");
-    apiKey = null;
-  }
-}
-
 Office.onReady(async (info) => {
-  if (info.host === Office.HostType.Excel) {
-    try {
-      await initializeClient()
-      console.log('Client initialized using saved API key/secret');
-    } catch (error) {
-      console.log(error)
-    }
-
-    while (true) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
+  try {
+    await initializeClient()
+    console.log('Client initialized using saved API key/secret');
+  } catch (error) {
+    console.log(error)
   }
 });
