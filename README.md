@@ -39,6 +39,8 @@ npx office-addin-debugging stop manifest.xml
 #### TO DO:
 
 - use web workers? https://github.com/OfficeDev/Office-Add-in-samples/tree/main/Samples/excel-add-in-custom-functions-using-web-workers
+- streaming queries: https://learn.microsoft.com/en-us/javascript/api/custom-functions-runtime/customfunctions.streaminginvocation?view=excel-js-preview
+    - might not work with earlier excels though
 
 
 
