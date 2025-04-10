@@ -132,6 +132,44 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
 
 
 /**
+ * Stream the bid/ask prices of a market in real-time.
+ * @customfunction
+ * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
+ * @param venue Market venue, e.g. "CME"
+ * @param invocation Streaming invocation object
+ */
+export function streamMarketBBO(symbol: string, venue: string, invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
+  try {
+    const intervalId = setInterval(async () => {
+      try {
+        const snapshot: Ticker = await client.ticker([], symbol, venue);
+
+        if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
+          invocation.setResult([[NaN, NaN]]); // Send NaN if data is invalid
+          return;
+        }
+
+        const bid = parseFloat(snapshot.bidPrice);
+        const ask = parseFloat(snapshot.askPrice);
+
+        invocation.setResult([[bid, ask]]); // Send updated bid/ask prices to Excel
+      } catch (error) {
+        console.error("Error fetching market data:", error);
+        invocation.setResult([[NaN, NaN]]); // Send NaN in case of an error
+      }
+    }, 1000); // Update every second
+
+    // Handle cancellation
+    invocation.onCanceled = () => {
+      clearInterval(intervalId); // Stop the interval when the user cancels the function
+    };
+  } catch (error) {
+    console.error("Error initializing streaming function:", error);
+    invocation.setResult([[NaN, NaN]]); // Send NaN in case of an initialization error
+  }
+}
+
+/**
  * Get the mid price of a the given market.
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"

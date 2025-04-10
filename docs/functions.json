@@ -40,6 +40,30 @@
             }
         },
         {
+            "description": "Stream the bid/ask prices of a market in real-time.",
+            "id": "STREAMMARKETBBO",
+            "name": "STREAMMARKETBBO",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "Market symbol, e.g. \"ES 20250620 CME Future\"",
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "description": "Market venue, e.g. \"CME\"",
+                    "name": "venue",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "number"
+            }
+        },
+        {
             "description": "Get the mid price of a the given market.",
             "helpUrl": "https://excel.architect.co/docs/functions.html#MARKETMID",
             "id": "MARKETMID",
