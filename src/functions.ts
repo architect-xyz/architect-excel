@@ -266,7 +266,6 @@ export async function accountList(): Promise<string[][]> {
  * @param account_name Account name, gotten from accountList function.
  * @returns The position information
  * @helpurl https://excel.architect.co/docs/functions.html#ACCOUNTPOSITIONS
- * @volatile
  */
 export async function accountPositions(account_name: string): Promise<string[][]> {
   let snapshot = await client.accountSummary([], account_name)
@@ -311,7 +310,7 @@ export async function accountPositions(account_name: string): Promise<string[][]
 }
 
 /**
- * Stream the value of specific positions in an account for a list of symbols, ensuring the same order as the input.
+ * Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @param symbols List of market symbols for the positions, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"].
@@ -334,8 +333,15 @@ export function streamAccountPositionValues(
           return;
         }
 
-        const headers = ["Symbol", "Quantity", "Cost Basis", "Value"];
-        const rows: string[][] = [headers];
+        // Define headers
+        const headers = [
+          "Symbol",
+          "Quantity",
+          "Cost Basis",
+        ];
+        const rows: string[][] = [[snapshot.timestamp, ...Array(headers.length - 1).fill("")]];
+
+        rows.push(headers);
 
         // Iterate over the provided symbols and retrieve position information
         symbols.forEach(symbol => {
@@ -349,6 +355,9 @@ export function streamAccountPositionValues(
             ]);
           } else {
             // If the position does not exist, return zero values
+              // position.breakEvenPrice ?? "NaN",
+              // position.liquidationPrice ?? "NaN",
+              // position.tradeTime ?? ""
             rows.push([symbol, "0", "0"]);
           }
         });
@@ -370,6 +379,7 @@ export function streamAccountPositionValues(
     invocation.setResult([["Error initializing function"]]);
   }
 }
+
 
 
 /**

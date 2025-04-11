@@ -125,9 +125,6 @@
             "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTPOSITIONS",
             "id": "ACCOUNTPOSITIONS",
             "name": "ACCOUNTPOSITIONS",
-            "options": {
-                "volatile": true
-            },
             "parameters": [
                 {
                     "description": "Account name, gotten from accountList function.",
@@ -141,7 +138,7 @@
             }
         },
         {
-            "description": "Stream the value of specific positions in an account for a list of symbols, ensuring the same order as the input.",
+            "description": "Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.",
             "helpUrl": "https://excel.architect.co/docs/functions.html#STREAMACCOUNTPOSITIONVALUES",
             "id": "STREAMACCOUNTPOSITIONVALUES",
             "name": "STREAMACCOUNTPOSITIONVALUES",
