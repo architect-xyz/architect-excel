@@ -52,7 +52,6 @@ export function remakeClient(api_key: string, api_secret: string) {
  * @customfunction
  * @returns The user's email address
  * @helpurl https://excel.architect.co/docs/functions.html#INITIALIZECLIENT
- * @volatile
  */
 export async function initializeClient() : Promise<string> {
   let apiKey: string | null;
@@ -227,7 +226,6 @@ export async function marketTicker(symbol: string, venue: string): Promise<numbe
  * @customfunction
  * @returns List of accounts
  * @helpurl https://excel.architect.co/docs/functions.html#ACCOUNTLIST
- * @volatile
  */
 export async function accountList(): Promise<string[][]> {
   const snapshot = await client.accounts([]);
@@ -263,7 +261,7 @@ export async function accountList(): Promise<string[][]> {
 }
 
 /**
- * Get Positions
+ * Get Positions for a given account
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @returns The position information
@@ -312,6 +310,66 @@ export async function accountPositions(account_name: string): Promise<string[][]
   }
 }
 
+/**
+ * Stream the value of specific positions in an account for a list of symbols, ensuring the same order as the input.
+ * @customfunction
+ * @param account_name Account name, gotten from accountList function.
+ * @param symbols List of market symbols for the positions, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"].
+ * @param invocation Streaming invocation object
+ * @helpurl https://excel.architect.co/docs/functions.html#STREAMACCOUNTPOSITIONVALUES
+ */
+export function streamAccountPositionValues(
+  account_name: string,
+  symbols: string[],
+  invocation: CustomFunctions.StreamingInvocation<string[][]>
+): void {
+  try {
+    // Set up an interval to fetch data periodically
+    const intervalId = setInterval(async () => {
+      try {
+        const snapshot = await client.accountSummary([], account_name);
+
+        if (!snapshot) {
+          invocation.setResult([["Error: No data available"]]);
+          return;
+        }
+
+        const headers = ["Symbol", "Quantity", "Cost Basis", "Value"];
+        const rows: string[][] = [headers];
+
+        // Iterate over the provided symbols and retrieve position information
+        symbols.forEach(symbol => {
+          const position = snapshot.positions.find(pos => pos.symbol === symbol);
+
+          if (position) {
+            rows.push([
+              position.symbol,
+              position.quantity,
+              position.costBasis ?? "NaN",
+            ]);
+          } else {
+            // If the position does not exist, return zero values
+            rows.push([symbol, "0", "0"]);
+          }
+        });
+
+        // Send the updated rows to Excel
+        invocation.setResult(rows);
+      } catch (error) {
+        console.error("Error fetching account position values:", error);
+        invocation.setResult([["Error fetching data"]]);
+      }
+    }, 1000); // Update every second
+
+    // Handle cancellation
+    invocation.onCanceled = () => {
+      clearInterval(intervalId); // Stop the interval when the user cancels the function
+    };
+  } catch (error) {
+    console.error("Error initializing streaming function:", error);
+    invocation.setResult([["Error initializing function"]]);
+  }
+}
 
 
 /**

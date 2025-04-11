@@ -6,9 +6,6 @@
             "helpUrl": "https://excel.architect.co/docs/functions.html#INITIALIZECLIENT",
             "id": "INITIALIZECLIENT",
             "name": "INITIALIZECLIENT",
-            "options": {
-                "volatile": true
-            },
             "parameters": [],
             "result": {
                 "type": "string"
@@ -117,9 +114,6 @@
             "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTLIST",
             "id": "ACCOUNTLIST",
             "name": "ACCOUNTLIST",
-            "options": {
-                "volatile": true
-            },
             "parameters": [],
             "result": {
                 "dimensionality": "matrix",
@@ -127,7 +121,7 @@
             }
         },
         {
-            "description": "Get Positions",
+            "description": "Get Positions for a given account",
             "helpUrl": "https://excel.architect.co/docs/functions.html#ACCOUNTPOSITIONS",
             "id": "ACCOUNTPOSITIONS",
             "name": "ACCOUNTPOSITIONS",
@@ -138,6 +132,32 @@
                 {
                     "description": "Account name, gotten from accountList function.",
                     "name": "account_name",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
+            }
+        },
+        {
+            "description": "Stream the value of specific positions in an account for a list of symbols, ensuring the same order as the input.",
+            "helpUrl": "https://excel.architect.co/docs/functions.html#STREAMACCOUNTPOSITIONVALUES",
+            "id": "STREAMACCOUNTPOSITIONVALUES",
+            "name": "STREAMACCOUNTPOSITIONVALUES",
+            "options": {
+                "stream": true
+            },
+            "parameters": [
+                {
+                    "description": "Account name, gotten from accountList function.",
+                    "name": "account_name",
+                    "type": "string"
+                },
+                {
+                    "description": "List of market symbols for the positions, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"].",
+                    "name": "symbols",
+                    "repeating": true,
                     "type": "string"
                 }
             ],
