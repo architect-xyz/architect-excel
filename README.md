@@ -35,12 +35,20 @@ npx office-addin-debugging start manifest.xml
 npx office-addin-debugging stop manifest.xml
 
 
+#### Remove Cache
+In File Explorer, go to
+%LOCALAPPDATA%\Microsoft\Office\16.0\Wef\
+
+(Change 16.0 to your Office version if needed, e.g., 15.0 or 17.0.)
+
+Delete the folder contents (this will clear the cache for all sideloaded add-ins).
+
+Restart Excel.
+
 
 #### TO DO:
 
 - use web workers? https://github.com/OfficeDev/Office-Add-in-samples/tree/main/Samples/excel-add-in-custom-functions-using-web-workers
-- streaming queries: https://learn.microsoft.com/en-us/javascript/api/custom-functions-runtime/customfunctions.streaminginvocation?view=excel-js-preview
-    - might not work with earlier excels though
 
 
 
