@@ -2,7 +2,7 @@
     "allowCustomDataForDataTypeAny": true,
     "functions": [
         {
-            "description": "Initialize the client with user-provided API key and secret.\nThis should run when the user enters their API key/secret.",
+            "description": "Initialize the client with user-provided API key and secret.\nThis should run when the user enters their API key/secret.\nReturns the user's email address.",
             "helpUrl": "https://excel.architect.co/functions_help.html#INITIALIZECLIENT",
             "id": "INITIALIZECLIENT",
             "name": "INITIALIZECLIENT",
@@ -12,7 +12,7 @@
             }
         },
         {
-            "description": "Get the bid/ask and last price of a market.",
+            "description": "Returns the bid/ask prices of the given market.",
             "helpUrl": "https://excel.architect.co/functions_help.html#MARKETBBO",
             "id": "MARKETBBO",
             "name": "MARKETBBO",
@@ -61,7 +61,7 @@
             }
         },
         {
-            "description": "Get the mid price of a the given market.",
+            "description": "Returns the mid price of a the given market.",
             "helpUrl": "https://excel.architect.co/functions_help.html#MARKETMID",
             "id": "MARKETMID",
             "name": "MARKETMID",
@@ -85,7 +85,7 @@
             }
         },
         {
-            "description": "Get the bid/ask/last price and size of a market",
+            "description": "Get the bid/ask/last price and size of a market.\nReturns: bid price, bid size, ask price, ask size, last price, last size.",
             "helpUrl": "https://excel.architect.co/functions_help.html#MARKETTICKER",
             "id": "MARKETTICKER",
             "name": "MARKETTICKER",
@@ -110,7 +110,7 @@
             }
         },
         {
-            "description": "Get accounts for a given API key/secret.",
+            "description": "Returns a list accounts for a given API key/secret.",
             "helpUrl": "https://excel.architect.co/functions_help.html#ACCOUNTLIST",
             "id": "ACCOUNTLIST",
             "name": "ACCOUNTLIST",
@@ -121,7 +121,7 @@
             }
         },
         {
-            "description": "Get Positions for a given account",
+            "description": "Get positions for a given account.",
             "helpUrl": "https://excel.architect.co/functions_help.html#ACCOUNTPOSITIONS",
             "id": "ACCOUNTPOSITIONS",
             "name": "ACCOUNTPOSITIONS",
@@ -138,7 +138,7 @@
             }
         },
         {
-            "description": "Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.",
+            "description": "Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.\nAny symbols not in the account will be returned with zero values.",
             "helpUrl": "https://excel.architect.co/functions_help.html#STREAMACCOUNTPOSITIONVALUES",
             "id": "STREAMACCOUNTPOSITIONVALUES",
             "name": "STREAMACCOUNTPOSITIONVALUES",
@@ -156,6 +156,11 @@
                     "name": "symbols",
                     "repeating": true,
                     "type": "string"
+                },
+                {
+                    "description": "If true, show all positions in the account.",
+                    "name": "show_all",
+                    "type": "boolean"
                 }
             ],
             "result": {
@@ -164,7 +169,7 @@
             }
         },
         {
-            "description": "Get Daily PnL",
+            "description": "Returns account Pnl information: cash excess, equity, position margin, purchasing power, realized pnl, unrealized pnl, total margin, yesterday equity",
             "helpUrl": "https://excel.architect.co/functions_help.html#ACCOUNTPNL",
             "id": "ACCOUNTPNL",
             "name": "ACCOUNTPNL",

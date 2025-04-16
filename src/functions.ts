@@ -11,6 +11,10 @@ Arrays:
 Specialized Data Types:
     Entity: Represents complex data structures with properties and optional display metadata.​
     FormattedNumber: Allows returning numbers with specific formatting, such as currency or percentages.​
+
+
+
+https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json-autogeneration
 */
 
 
@@ -18,7 +22,7 @@ Specialized Data Types:
 /// <reference types="office-js" />
 
 import { create, Client, Config } from '@afintech/sdk/env/browser';
-import { Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
+import { AccountPosition, Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
 
 
 let config: Config = {
@@ -49,8 +53,8 @@ export function remakeClient(api_key: string, api_secret: string) {
 /**
  * Initialize the client with user-provided API key and secret.
  * This should run when the user enters their API key/secret.
+ * Returns the user's email address.
  * @customfunction
- * @returns The user's email address
  * @helpurl https://excel.architect.co/functions_help.html#INITIALIZECLIENT
  */
 export async function initializeClient() : Promise<string> {
@@ -101,11 +105,10 @@ export async function initializeClient() : Promise<string> {
  }
 
 /**
- * Get the bid/ask and last price of a market.
+ * Returns the bid/ask prices of the given market.
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
- * @returns The bbo prices of the given market
  * @helpurl https://excel.architect.co/functions_help.html#MARKETBBO
  * @volatile
  */
@@ -136,6 +139,7 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
  * @param invocation Streaming invocation object
+ * @streaming
  */
 export function streamMarketBBO(symbol: string, venue: string, invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
   try {
@@ -169,11 +173,10 @@ export function streamMarketBBO(symbol: string, venue: string, invocation: Custo
 }
 
 /**
- * Get the mid price of a the given market.
+ * Returns the mid price of a the given market.
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
- * @returns The mid market price of the given market
  * @helpurl https://excel.architect.co/functions_help.html#MARKETMID
  * @volatile
  */
@@ -188,11 +191,11 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
 
 
 /**
- * Get the bid/ask/last price and size of a market
+ * Get the bid/ask/last price and size of a market.
+ * Returns: bid price, bid size, ask price, ask size, last price, last size.
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
- * @returns The ticker information: bid price, bid size, ask price, ask size, last price, last size
  * @helpurl https://excel.architect.co/functions_help.html#MARKETTICKER
  * @volatile
  */
@@ -222,9 +225,8 @@ export async function marketTicker(symbol: string, venue: string): Promise<numbe
 
 
 /**
- * Get accounts for a given API key/secret.
+ * Returns a list accounts for a given API key/secret.
  * @customfunction
- * @returns List of accounts
  * @helpurl https://excel.architect.co/functions_help.html#ACCOUNTLIST
  */
 export async function accountList(): Promise<string[][]> {
@@ -261,10 +263,9 @@ export async function accountList(): Promise<string[][]> {
 }
 
 /**
- * Get Positions for a given account
+ * Get positions for a given account.
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
- * @returns The position information
  * @helpurl https://excel.architect.co/functions_help.html#ACCOUNTPOSITIONS
  */
 export async function accountPositions(account_name: string): Promise<string[][]> {
@@ -311,71 +312,85 @@ export async function accountPositions(account_name: string): Promise<string[][]
 
 /**
  * Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.
+ * Any symbols not in the account will be returned with zero values.
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @param symbols List of market symbols for the positions, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"].
  * @param invocation Streaming invocation object
+ * @param show_all If true, show all positions in the account.
  * @helpurl https://excel.architect.co/functions_help.html#STREAMACCOUNTPOSITIONVALUES
+ * @streaming
  */
 export function streamAccountPositionValues(
   account_name: string,
   symbols: string[],
+  show_all: boolean,
   invocation: CustomFunctions.StreamingInvocation<string[][]>
 ): void {
+  // Hoist constants to avoid re‑allocating them each tick
+  const headers = ["Symbol", "Quantity", "Cost Basis"];
+  const headerRow = headers; 
+  const headerCount = headers.length;
+
+  const baseSymbols = show_all ? null : symbols;
+
   try {
-    // Set up an interval to fetch data periodically
     const intervalId = setInterval(async () => {
       try {
         const snapshot = await client.accountSummary([], account_name);
-
         if (!snapshot) {
           invocation.setResult([["Error: No data available"]]);
           return;
         }
 
-        // Define headers
-        const headers = [
-          "Symbol",
-          "Quantity",
-          "Cost Basis",
-        ];
-        const rows: string[][] = [[snapshot.timestamp, ...Array(headers.length - 1).fill("")]];
+        const posMap = new Map<string, AccountPosition>();
+        for (const pos of snapshot.positions) {
+          posMap.set(pos.symbol, pos);
+        }
 
-        rows.push(headers);
+        let symbolList: string[];
+        if (show_all) {
+          // union of account symbols + requested symbols
+          symbolList = Array.from(
+            new Set([...posMap.keys(), ...symbols])
+          );
+        } else {
+          // only the requested symbols
+          symbolList = baseSymbols!;
+        }
 
-        // Iterate over the provided symbols and retrieve position information
-        symbols.forEach(symbol => {
-          const position = snapshot.positions.find(pos => pos.symbol === symbol);
+        const rows: string[][] = [];
 
-          if (position) {
+        const tsRow = new Array<string>(headerCount);
+        tsRow[0] = snapshot.timestamp;
+        for (let i = 1; i < headerCount; i++) tsRow[i] = "";
+        rows.push(tsRow);
+
+        rows.push(headerRow);
+
+        for (const sym of symbolList) {
+          const p = posMap.get(sym);
+          if (p) {
             rows.push([
-              position.symbol,
-              position.quantity,
-              position.costBasis ?? "NaN",
+              p.symbol,
+              p.quantity.toString(),
+              p.costBasis != null ? p.costBasis.toString() : "NaN",
             ]);
           } else {
-            // If the position does not exist, return zero values
-              // position.breakEvenPrice ?? "NaN",
-              // position.liquidationPrice ?? "NaN",
-              // position.tradeTime ?? ""
-            rows.push([symbol, "0", "0"]);
+            rows.push([sym, "0", "0"]);
           }
-        });
+        }
 
-        // Send the updated rows to Excel
         invocation.setResult(rows);
-      } catch (error) {
-        console.error("Error fetching account position values:", error);
+      } catch (err) {
+        console.error("Error fetching account position values:", err);
         invocation.setResult([["Error fetching data"]]);
       }
-    }, 1000); // Update every second
+    }, 1000);
 
-    // Handle cancellation
-    invocation.onCanceled = () => {
-      clearInterval(intervalId); // Stop the interval when the user cancels the function
-    };
-  } catch (error) {
-    console.error("Error initializing streaming function:", error);
+    invocation.onCanceled = () => clearInterval(intervalId);
+  } catch (err) {
+    console.error("Error initializing streaming function:", err);
     invocation.setResult([["Error initializing function"]]);
   }
 }
@@ -383,10 +398,9 @@ export function streamAccountPositionValues(
 
 
 /**
- * Get Daily PnL
+ * Returns account Pnl information: cash excess, equity, position margin, purchasing power, realized pnl, unrealized pnl, total margin, yesterday equity
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
- * @returns Account Pnl information: cash excess, equity, position margin, purchasing power, realized pnl, unrealized pnl, total margin, yesterday equity
  * @helpurl https://excel.architect.co/functions_help.html#ACCOUNTPNL
  * @volatile
  */
@@ -421,7 +435,6 @@ export async function accountPnl(account_name: string): Promise<number[] []> {
  * Get Account Balance.
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
- * @returns Account balances
  * @helpurl https://excel.architect.co/functions_help.html#ACCOUNTBALANCE
  * @volatile
  */
