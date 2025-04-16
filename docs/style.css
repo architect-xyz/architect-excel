@@ -15,7 +15,7 @@ header {
 }
 
 header h1 {
-    margin: 0;
+    margin: 0.3rem;
     font-size: 1.5rem;
 }
 
@@ -31,7 +31,13 @@ nav a:hover {
 }
 
 .container {
-    padding: 2rem;
+    max-width: 1080px;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+.container h1 {
+    margin-bottom: 3rem;
 }
 
 li {
