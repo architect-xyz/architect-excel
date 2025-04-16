@@ -36,10 +36,10 @@ fetch('functions.json')
 
     // Result
     if (fn.result) {
-      const result = document.createElement('p');
+      const result_type = document.createElement('p');
       const dim = fn.result.dimensionality ? `${fn.result.dimensionality} ` : '';
-      result.innerHTML = `<strong>Returns:</strong> ${dim}${fn.result.type}`;
-      section.appendChild(result);
+      result_type.innerHTML = `<strong>Return Type:</strong> ${dim}${fn.result.type}`;
+      section.appendChild(result_type);
     }
 
     container.appendChild(section);

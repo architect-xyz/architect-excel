@@ -40,6 +40,10 @@ nav a:hover {
     margin-bottom: 3rem;
 }
 
+.container h2 {
+    margin-top: 3rem;
+}
+
 li {
     margin-bottom: 1rem;
 }
