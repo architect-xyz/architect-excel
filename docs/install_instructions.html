@@ -17,15 +17,65 @@
     </script>
     <div class="container">
         <h1><a href="https://architect.co"><img src="assets/icon-32.png" alt="Architect Logo"></a> Architect Add-in for Excel Install Instructions</h1>
-        <p>Follow these steps to install the Architect Add-in for Excel:</p>
-        <ol>
-            <li>Open Excel and navigate to the <strong>Home</strong> tab.</li>
-            <li>Click on <strong>Office Add-ins</strong> and then search for <strong>Architect Add-in for Excel</strong>.</li>
-            <li>Once installed, the add-in will appear in Excel’s <strong>Task Pane</strong> and is ready to use.</li>
-        </ol>
         <p>For troubleshooting or further support, contact our support team via Slack or email support@architect.co.</p>
-        <p>Users without accounts can create an account <a href="https://app.architect.co/login">here</a>.</p>
-        <p>Users with accounts can create an api key/secret <a href="https://app.architect.co/user/account">here</a>.<p>
+        <p>Users <b>without accounts </b> can create an account <a href="https://app.architect.co/login">here</a>.</p>
+
+        <h2>Requirements:</h2>
+        <ul>
+            <li>Excel 2021 or later - specifically Version 2002 (the 2002 does <b>not</b> refer to the year) / build 12527.20092 or higher</li>
+            <li>Architect account with api key/secret (created <a href="https://app.architect.co/user/account">here</a>) </li>
+        </ul>
+
+        <h3>How to Check Excel Version:</h3>
+        <ul>
+            <li>Open Excel and click on <strong>Home</strong> in the top left corner.
+            Click on <strong>Account</strong> or <strong>Help</strong> to view your Excel version.</li>
+            <img src="instructional/excel_check_1.png" alt="Excel Version Check" width="800">
+            <li>In the <strong>About Excel</strong> section, check the version number. The version number should be above <b>2002</b>.</li>
+            <img src="instructional/excel_check_2.png" alt="Excel Version Check" width="800">
+        </ul>
+
+        <h2>Install Instructions:</h2>
+
+        <ol>
+            <li>
+                Open Excel and navigate to the <strong>Home</strong> tab and click on <strong>Add-ins</strong>.
+                <br><br>
+                <img src="instructional/install/1.png" alt="Excel Home Tab" width="900">
+            </li>
+            <li>
+                Search for <strong>Architect Add-in for Excel</strong> and click <b>Add</b>.
+                <br><br>
+                <img src="instructional/install/2.png" alt="Search for Architect Add-in" width="500">
+            </li>
+            <li>
+                Click on <strong>Add</strong> to install it. You should see the task pane below. Click <b>"Allow and Continue"</b>.
+                <br><br>
+                <img src="instructional/install/3.png" alt="Search for Architect Add-in" width="500">
+            </li>
+            <li>
+                Click <b>Architect Input API Key</b> to open the task pane if not already opened.
+                <br><br>
+                <img src="instructional/install/4.png" alt="Search for Architect Add-in" width="500">
+            </li>
+            <li>
+                Input your API key and secret. Users <b>with accounts</b> can create an api key/secret <a href="https://app.architect.co/user/account">here</a>.
+                <br>
+                Once you click <b>"Save"</b>, it should say that your Client was initialized with your email.
+                <br><br>
+                <img src="instructional/install/5.png" alt="Search for Architect Add-in" width="500">
+            </li>
+            <li>
+                Finished!
+                To check that your API key and secret are working, input the function <b>=ARCHITECT.INITIALIZECLIENT()</b> in a cell and you should get your email.
+                To get an overview of the functions, go to the <a href="functions_help.html">functions help page</a>.
+                <br><br>
+                <img src="instructional/install/6.png" alt="Search for Architect Add-in" width="500">
+            </li>
+            <li>
+                For an example of how to use the add-in, download the <a href="instructional/Architect_Add-in_For_Excel.xlsx">Excel Example</a>.
+            </li>
+        </ol>
     </div>
 </body>
 </html>
