@@ -152,15 +152,15 @@
                     "type": "string"
                 },
                 {
+                    "description": "If true, show all positions in the account.",
+                    "name": "show_all",
+                    "type": "boolean"
+                },
+                {
                     "description": "List of market symbols for the positions, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"].",
                     "name": "symbols",
                     "repeating": true,
                     "type": "string"
-                },
-                {
-                    "description": "If true, show all positions in the account.",
-                    "name": "show_all",
-                    "type": "boolean"
                 }
             ],
             "result": {

@@ -12,8 +12,6 @@ Specialized Data Types:
     Entity: Represents complex data structures with properties and optional display metadata.​
     FormattedNumber: Allows returning numbers with specific formatting, such as currency or percentages.​
 
-
-
 https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json-autogeneration
 */
 
@@ -56,6 +54,7 @@ export function remakeClient(api_key: string, api_secret: string) {
  * Returns the user's email address.
  * @customfunction
  * @helpurl https://excel.architect.co/functions_help.html#INITIALIZECLIENT
+ * @returns The user's email address
  */
 export async function initializeClient() : Promise<string> {
   let apiKey: string | null;
@@ -316,15 +315,15 @@ export async function accountPositions(account_name: string): Promise<string[][]
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
  * @param symbols List of market symbols for the positions, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"].
- * @param invocation Streaming invocation object
  * @param show_all If true, show all positions in the account.
+ * @param invocation Streaming invocation object
  * @helpurl https://excel.architect.co/functions_help.html#STREAMACCOUNTPOSITIONVALUES
  * @streaming
  */
 export function streamAccountPositionValues(
   account_name: string,
-  symbols: string[],
   show_all: boolean,
+  symbols: string[],
   invocation: CustomFunctions.StreamingInvocation<string[][]>
 ): void {
   // Hoist constants to avoid re‑allocating them each tick
