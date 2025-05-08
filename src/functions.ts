@@ -472,15 +472,21 @@ export async function accountBalance(account_name: string): Promise<number> {
  * @param expiration Expiration date, accepts several formats. e.g. "20250620", or "M5"/"M25" for June 2025, "Jun25"
  * @helpurl https://excel.architect.co/functions_help.html#MARKETLIST
  */
-export async function deriveFuturesSymbol(base_name: string, expiration: string): Promise<string [] []> {
+export async function deriveFuturesSymbol(base_name: string, expiration: string): Promise<string> {
 
   const expirationString: string = getExpirationString(expiration);
   const searchString: string = `${base_name} ${expirationString}`;
   const symbols = await client.searchSymbols({ searchString });
 
-  const result = symbols.map(symbol => [symbol]);
-
-  return result;
+  for (const symbol of symbols) {
+    if (symbol.includes(base_name) && symbol.includes(expirationString)) {
+      return symbol;
+    }
+  }
+  throw new CustomFunctions.Error(
+    CustomFunctions.ErrorCode.notAvailable,
+    "No symbols found for the given base name and expiration date."
+  );
 }
 
 
