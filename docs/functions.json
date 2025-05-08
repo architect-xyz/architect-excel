@@ -208,6 +208,28 @@
             }
         },
         {
+            "description": "Get the list of symbols available for a given market.",
+            "helpUrl": "https://excel.architect.co/functions_help.html#MARKETLIST",
+            "id": "DERIVEFUTURESSYMBOL",
+            "name": "DERIVEFUTURESSYMBOL",
+            "parameters": [
+                {
+                    "description": "Base name, e.g. \"ES\", \"NQ\", \"RTY\"",
+                    "name": "base_name",
+                    "type": "string"
+                },
+                {
+                    "description": "Expiration date, accepts several formats. e.g. \"20250620\", or \"M5\"/\"M25\" for June 2025, \"Jun25\"",
+                    "name": "expiration",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
+            }
+        },
+        {
             "description": "Search symbols by market name",
             "helpUrl": "https://excel.architect.co/functions_help.html#SEARCHSYMBOLS",
             "id": "SEARCHSYMBOLS",

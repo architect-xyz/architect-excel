@@ -465,6 +465,76 @@ export async function accountBalance(account_name: string): Promise<number> {
   }
 }
 
+/**
+ * Get the list of symbols available for a given market.
+ * @customfunction
+ * @param base_name Base name, e.g. "ES", "NQ", "RTY"
+ * @param expiration Expiration date, accepts several formats. e.g. "20250620", or "M5"/"M25" for June 2025, "Jun25"
+ * @helpurl https://excel.architect.co/functions_help.html#MARKETLIST
+ */
+export async function deriveFuturesSymbol(base_name: string, expiration: string): Promise<string [] []> {
+
+  const expirationString: string = getExpirationString(expiration);
+  const searchString: string = `${base_name} ${expirationString}`;
+  const symbols = await client.searchSymbols({ searchString });
+
+  const result = symbols.map(symbol => [symbol]);
+
+  return result;
+}
+
+
+function getExpirationString(expiration: string): string {
+  const monthMap: { [key: string]: string } = {
+    Jan: "01",
+    Feb: "02",
+    Mar: "03",
+    Apr: "04",
+    May: "05",
+    Jun: "06",
+    Jul: "07",
+    Aug: "08",
+    Sep: "09",
+    Oct: "10",
+    Nov: "11",
+    Dec: "12",
+    F: "01",
+    G: "02",
+    H: "03",
+    J: "04",
+    K: "05",
+    M: "06",
+    N: "07",
+    Q: "08",
+    U: "09",
+    V: "10",
+    X: "11",
+    Z: "12"
+  };
+  const match = expiration.match(/([A-Za-z]+|M)(\d{1,2})/);
+  if (!match) {
+    throw new Error(`Invalid expiration format: ${expiration}`);
+  }
+  let month = match[1]; // Month part (e.g., "Jun" or "M")
+  let year = match[2];  // Year part (e.g., "25" or "5")
+
+  // Handle month abbreviations (e.g., "Jun", "June")
+  if (month.length > 1) {
+    month = month.substring(0, 3); // Take the first 3 letters
+  }
+
+  // Convert month to numeric format
+  const numericMonth = monthMap[month];
+  if (!numericMonth) {
+    throw new Error(`Invalid month abbreviation: ${month}`);
+  }
+
+  // Convert year to 4-digit format
+  const fullYear = year.length === 1 ? `202${year}` : `20${year}`;
+
+  // Return the formatted expiration date (YYYYMM)
+  return `${fullYear}${numericMonth}`;
+}
 
 /**
  * Search symbols by market name
