@@ -133,7 +133,7 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
 
 
 /**
- * Stream the bid/ask prices of a market in real-time.
+ * Stream the bid/ask/last trade prices of a market in real-time.
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
@@ -146,18 +146,19 @@ export function streamMarketBBO(symbol: string, venue: string, invocation: Custo
       try {
         const snapshot: Ticker = await client.ticker([], symbol, venue);
 
-        if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice) {
+        if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice || !snapshot.lastPrice) {
           invocation.setResult([[NaN, NaN]]); // Send NaN if data is invalid
           return;
         }
 
         const bid = parseFloat(snapshot.bidPrice);
         const ask = parseFloat(snapshot.askPrice);
+        const last = parseFloat(snapshot.lastPrice);
 
-        invocation.setResult([[bid, ask]]); // Send updated bid/ask prices to Excel
+        invocation.setResult([[bid, ask, last]]); // Send updated bid/ask/last prices to Excel
       } catch (error) {
         console.error("Error fetching market data:", error);
-        invocation.setResult([[NaN, NaN]]); // Send NaN in case of an error
+        invocation.setResult([[NaN, NaN, NaN]]); // Send NaN in case of an error
       }
     }, 1000); // Update every second
 

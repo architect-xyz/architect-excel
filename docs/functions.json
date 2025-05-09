@@ -37,7 +37,7 @@
             }
         },
         {
-            "description": "Stream the bid/ask prices of a market in real-time.",
+            "description": "Stream the bid/ask/last trade prices of a market in real-time.",
             "id": "STREAMMARKETBBO",
             "name": "STREAMMARKETBBO",
             "options": {
