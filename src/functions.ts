@@ -213,7 +213,8 @@ export async function marketTicker(symbol: string, venue: string): Promise<numbe
     const ask_sz: number = snapshot.askSize ? parseFloat(snapshot.askSize) : NaN;
     const last_px: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
     const last_sz: number = snapshot.lastSize ? parseFloat(snapshot.lastSize) : NaN;
-    return [[bid_px, bid_sz, ask_px, ask_sz, last_px, last_sz]]
+    const lastSettlementPrice: number = snapshot.lastSettlementPrice ? parseFloat(snapshot.lastSettlementPrice) : NaN;
+    return [[bid_px, bid_sz, ask_px, ask_sz, last_px, last_sz, lastSettlementPrice]]
   } catch (error) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -483,6 +484,7 @@ export async function deriveFuturesSymbol(base_name: string, expiration: string)
       return symbol;
     }
   }
+
   throw new CustomFunctions.Error(
     CustomFunctions.ErrorCode.notAvailable,
     "No symbols found for the given base name and expiration date."
