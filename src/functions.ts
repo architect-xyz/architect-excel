@@ -40,6 +40,30 @@ let client: Client = (new Proxy({}, {
 }) as Client);
 
 
+// ──────────────────────────────────────────────────────────────────────────────
+//  Shared helper ─ add this in one place and import or copy to both files
+// ──────────────────────────────────────────────────────────────────────────────
+/** Excel can send a single cell, a 2-D array from an inline constant/range,
+ *  or nothing at all.  Convert that to a flat string[] or `undefined`. */
+const normalizeFields = (input: any): string[] | undefined => {
+  if (input == null || (Array.isArray(input) && input.length === 0)) return undefined;
+
+  // Inline/range arrays arrive as a 2-D matrix (rows × columns).
+  if (Array.isArray(input) && Array.isArray(input[0])) {
+    return (input as any[][]).flat().map(String).filter(Boolean);
+  }
+
+  // Already a flat array  ▸ ["bidPrice", "askPrice"]
+  if (Array.isArray(input)) return (input as any[]).map(String);
+
+  // Single cell ▸ "bidPrice"
+  if (typeof input === "string") return [input];
+
+  // Anything else: treat as “no fields” ⇒ default later on
+  return undefined;
+};
+
+
 export function remakeClient(api_key: string, api_secret: string) {
   config.apiKey = api_key;
   config.apiSecret = api_secret;
@@ -170,7 +194,7 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
  */
 export function streamMarketTicker(symbol: string, venue: string, fields: string[] | undefined, invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
   const defaultFields = ["bidPrice", "askPrice", "lastPrice"];
-  const chosenFields = (fields && fields.length > 0 ? fields : defaultFields);
+  const chosenFields = normalizeFields(fields) ?? defaultFields;
 
   // Map snapshot keys → numeric values we can push into Excel
   const pluck = (snap: Ticker, key: string): number =>
@@ -261,7 +285,7 @@ export async function marketTicker(symbol: string, venue: string, fields: string
     "lastPrice",
     "lastSize",
   ];
-  const chosenFields = fields && fields.length > 0 ? fields : defaultFields;
+  const chosenFields = normalizeFields(fields) ?? defaultFields;
 
   // Helper: pluck a numeric value (or NaN) from the snapshot
   const pluck = (snap: Ticker, key: string): number =>
