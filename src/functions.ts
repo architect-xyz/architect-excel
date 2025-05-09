@@ -159,7 +159,7 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
 /**
  * Stream the bid/ask/last prices of a market in real-time. Or other fields if specified.
  * 
- * For the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, dividend, dividendYield, epsAdj, high24h, lastPrice, lastSettlementPrice, lastSize, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d
+ * For the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, lastPrice, lastSize, lastSettlementPrice, timestamp, dividend, dividendYield, epsAdj, high24h, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
@@ -218,7 +218,7 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
 /**
  * Get the bid/ask/last price and size of a market.
  * Returns: bid price, bid size, ask price, ask size, last price, last size.
- * For the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, dividend, dividendYield, epsAdj, high24h, lastPrice, lastSettlementPrice, lastSize, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d
+ * For the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, lastPrice, lastSize, lastSettlementPrice, timestamp, dividend, dividendYield, epsAdj, high24h, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
@@ -303,137 +303,123 @@ export async function accountList(): Promise<string[][]> {
   }
 }
 
-/**
- * Get positions for a given account.
- * @customfunction
- * @param account_name Account name, gotten from accountList function.
- * @helpurl https://excel.architect.co/functions_help.html#ACCOUNTPOSITIONS
- */
-export async function accountPositions(account_name: string): Promise<string[][]> {
-  let snapshot = await client.accountSummary([], account_name)
-  if (!snapshot) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.notAvailable,
-      "Received bad data from the server, please try again."
-    )
-  }
-
-  try {
-    const headers = [
-      "Symbol",
-      "Quantity",
-      "Cost Basis",
-      // "Break Even Price",
-      // "Liquidation Price",
-      // "Trade Time"
-    ];
-    const rows: string[][] = [[snapshot.timestamp, ...Array(headers.length - 1).fill("")]];
-
-    rows.push(headers);
-
-    snapshot.positions.forEach(position => {
-      rows.push([
-        position.symbol,
-        position.quantity,
-        position.costBasis ?? "NaN",
-        // position.breakEvenPrice ?? "NaN",
-        // position.liquidationPrice ?? "NaN",
-        // position.tradeTime ?? ""
-      ]);
-    });
-
-    return rows;
-  } catch (error) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.invalidValue,
-      "Failed to parse account summary snapshot"
-    )
-  }
-}
+// /**
+//  * Get positions for a given account.
+//  * @customfunction
+//  * @param account_name Account name, gotten from accountList function.
+//  * @helpurl https://excel.architect.co/functions_help.html#ACCOUNTPOSITIONS
+//  */
+// export async function accountPositions(account_name: string): Promise<string[][]> {
+//   let snapshot = await client.accountSummary([], account_name)
+//   if (!snapshot) {
+//     throw new CustomFunctions.Error(
+//       CustomFunctions.ErrorCode.notAvailable,
+//       "Received bad data from the server, please try again."
+//     )
+//   }
+// 
+//   try {
+//     const headers = [
+//       "Symbol",
+//       "Quantity",
+//       "Cost Basis",
+//       // "Break Even Price",
+//       // "Liquidation Price",
+//       // "Trade Time"
+//     ];
+//     const rows: string[][] = [[snapshot.timestamp, ...Array(headers.length - 1).fill("")]];
+// 
+//     rows.push(headers);
+// 
+//     snapshot.positions.forEach(position => {
+//       rows.push([
+//         position.symbol,
+//         position.quantity,
+//         position.costBasis ?? "NaN",
+//         // position.breakEvenPrice ?? "NaN",
+//         // position.liquidationPrice ?? "NaN",
+//         // position.tradeTime ?? ""
+//       ]);
+//     });
+// 
+//     return rows;
+//   } catch (error) {
+//     throw new CustomFunctions.Error(
+//       CustomFunctions.ErrorCode.invalidValue,
+//       "Failed to parse account summary snapshot"
+//     )
+//   }
+// }
 
 /**
  * Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.
  * Any symbols not in the account will be returned with zero values.
  * @customfunction
  * @param account_name Account name, gotten from accountList function.
- * @param symbols List of market symbols for the positions, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"].
- * @param show_all If true, show all positions in the account.
+ * @param [symbols] List of market symbols for the positions, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"].
+ * @param [show_all] If true, show all positions in the account.
  * @param invocation Streaming invocation object
  * @helpurl https://excel.architect.co/functions_help.html#STREAMACCOUNTPOSITIONVALUES
  * @streaming
  */
 export function streamAccountPositionValues(
   account_name: string,
+  symbols: string[][],
   show_all: boolean,
-  symbols: string[],
   invocation: CustomFunctions.StreamingInvocation<string[][]>
 ): void {
   // Hoist constants to avoid re‑allocating them each tick
-  const headers = ["Symbol", "Quantity", "Cost Basis"];
-  const headerRow = headers; 
-  const headerCount = headers.length;
 
-  const baseSymbols = show_all ? null : symbols;
+  const headerRow      = ["Symbol", "Quantity", "Cost Basis"];
+  const chosenSymbols = normalizeFields(symbols) ?? [];
+  const includeAll     = show_all ?? false;
 
-  try {
-    const intervalId = setInterval(async () => {
-      try {
-        const snapshot = await client.accountSummary([], account_name);
-        if (!snapshot) {
-          invocation.setResult([["Error: No data available"]]);
-          return;
-        }
-
-        const posMap = new Map<string, AccountPosition>();
-        for (const pos of snapshot.positions) {
-          posMap.set(pos.symbol, pos);
-        }
-
-        let symbolList: string[];
-        if (show_all) {
-          // union of account symbols + requested symbols
-          symbolList = Array.from(
-            new Set([...posMap.keys(), ...symbols])
-          );
-        } else {
-          // only the requested symbols
-          symbolList = baseSymbols!;
-        }
-
-        const rows: string[][] = [];
-
-        const tsRow = new Array<string>(headerCount);
-        tsRow[0] = snapshot.timestamp;
-        for (let i = 1; i < headerCount; i++) tsRow[i] = "";
-        rows.push(tsRow);
-
-        rows.push(headerRow);
-
-        for (const sym of symbolList) {
-          const p = posMap.get(sym);
-          if (p) {
-            rows.push([
-              p.symbol,
-              p.quantity.toString(),
-              p.costBasis != null ? p.costBasis.toString() : "NaN",
-            ]);
-          } else {
-            rows.push([sym, "0", "0"]);
-          }
-        }
-
-        invocation.setResult(rows);
-      } catch (err) {
-        console.error("Error fetching account position values:", err);
-        invocation.setResult([["Error fetching data"]]);
+  const intervalId = setInterval(async () => {
+    try {
+      const snapshot = await client.accountSummary([], account_name);
+      if (!snapshot) {
+        invocation.setResult([["Error: No data available"]]);
+        return;
       }
-    }, 1000);
 
-    invocation.onCanceled = () => clearInterval(intervalId);
-  } catch (err) {
-    console.error("Error initializing streaming function:", err);
-    invocation.setResult([["Error initializing function"]]);
-  }
+      // Map existing positions for quick look-ups
+      const posMap = new Map(snapshot.positions.map(p => [p.symbol, p]));
+
+      // Decide which symbols to show this tick
+      let symbolList: string[];
+      if (includeAll) {
+        symbolList = Array.from(
+          new Set([...posMap.keys(), ...chosenSymbols]),
+        );
+      } else if (chosenSymbols.length) {
+        symbolList = chosenSymbols;
+      } else {
+        // No list supplied → just dump the account’s current symbols
+        symbolList = Array.from(posMap.keys());
+      }
+
+      // Build the 2-D result (timestamp row ▸ header ▸ data rows)
+      const rows: string[][] = [
+        [snapshot.timestamp, "", ""],          // timestamp row
+        headerRow,
+        ...symbolList.map(sym => {
+          const p = posMap.get(sym);
+          return p
+            ? [p.symbol, p.quantity.toString(),
+               p.costBasis != null ? p.costBasis.toString() : "NaN"]
+            : [sym, "0", "0"];
+        }),
+      ];
+
+      invocation.setResult(rows);
+
+    } catch (err) {
+      console.error("streamAccountPositionValues:", err);
+      invocation.setResult([["Error fetching data"]]);
+    }
+  }, 1_000);                                        // refresh every second
+
+  invocation.onCanceled = () => clearInterval(intervalId);
 }
 
 

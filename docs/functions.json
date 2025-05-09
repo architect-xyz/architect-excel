@@ -37,7 +37,7 @@
             }
         },
         {
-            "description": "Stream the bid/ask/last prices of a market in real-time. Or other fields if specified.\n\nFor the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, dividend, dividendYield, epsAdj, high24h, lastPrice, lastSettlementPrice, lastSize, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d",
+            "description": "Stream the bid/ask/last prices of a market in real-time. Or other fields if specified.\n\nFor the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, lastPrice, lastSize, lastSettlementPrice, timestamp, dividend, dividendYield, epsAdj, high24h, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d",
             "id": "STREAMMARKETTICKER",
             "name": "STREAMMARKETTICKER",
             "options": {
@@ -92,7 +92,7 @@
             }
         },
         {
-            "description": "Get the bid/ask/last price and size of a market.\nReturns: bid price, bid size, ask price, ask size, last price, last size.\nFor the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, dividend, dividendYield, epsAdj, high24h, lastPrice, lastSettlementPrice, lastSize, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d",
+            "description": "Get the bid/ask/last price and size of a market.\nReturns: bid price, bid size, ask price, ask size, last price, last size.\nFor the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, lastPrice, lastSize, lastSettlementPrice, timestamp, dividend, dividendYield, epsAdj, high24h, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d",
             "helpUrl": "https://excel.architect.co/functions_help.html#MARKETTICKER",
             "id": "MARKETTICKER",
             "name": "MARKETTICKER",
@@ -135,23 +135,6 @@
             }
         },
         {
-            "description": "Get positions for a given account.",
-            "helpUrl": "https://excel.architect.co/functions_help.html#ACCOUNTPOSITIONS",
-            "id": "ACCOUNTPOSITIONS",
-            "name": "ACCOUNTPOSITIONS",
-            "parameters": [
-                {
-                    "description": "Account name, gotten from accountList function.",
-                    "name": "account_name",
-                    "type": "string"
-                }
-            ],
-            "result": {
-                "dimensionality": "matrix",
-                "type": "string"
-            }
-        },
-        {
             "description": "Stream the positions for a given account in real-time, ensuring the same structure as accountPositions.\nAny symbols not in the account will be returned with zero values.",
             "helpUrl": "https://excel.architect.co/functions_help.html#STREAMACCOUNTPOSITIONVALUES",
             "id": "STREAMACCOUNTPOSITIONVALUES",
@@ -166,15 +149,17 @@
                     "type": "string"
                 },
                 {
-                    "description": "If true, show all positions in the account.",
-                    "name": "show_all",
-                    "type": "boolean"
+                    "description": "List of market symbols for the positions, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"].",
+                    "dimensionality": "matrix",
+                    "name": "symbols",
+                    "optional": true,
+                    "type": "string"
                 },
                 {
-                    "description": "List of market symbols for the positions, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"].",
-                    "name": "symbols",
-                    "repeating": true,
-                    "type": "string"
+                    "description": "If true, show all positions in the account.",
+                    "name": "show_all",
+                    "optional": true,
+                    "type": "boolean"
                 }
             ],
             "result": {
