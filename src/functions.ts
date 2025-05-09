@@ -133,43 +133,69 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
 
 
 /**
- * Stream the bid/ask/last trade prices of a market in real-time.
+ * Stream the bid/ask/last prices of a market in real-time. Or other fields if specified.
+ * 
+ * For the field params, the possible values are:
+ * - askPrice
+ * - askSize
+ * - bidPrice
+ * - bidSize
+ * - dividend
+ * - dividendYield
+ * - epsAdj
+ * - high24h
+ * - lastPrice
+ * - lastSettlementPrice
+ * - lastSize
+ * - low24h
+ * - marketCap
+ * - open24h
+ * - openInterest
+ * - priceToEarnings
+ * - sessionHigh
+ * - sessionLow
+ * - sessionOpen
+ * - sessionVolume
+ * - sharesOutstandingWeightedAdj
+ * - symbol
+ * - timestamp
+ * - volume24h
+ * - volume30d
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
+ * @param [fields] List of fields to stream, default value is ["bidPrice","askPrice","lastPrice"]
  * @param invocation Streaming invocation object
  * @streaming
  */
-export function streamMarketBBO(symbol: string, venue: string, invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
-  try {
-    const intervalId = setInterval(async () => {
-      try {
-        const snapshot: Ticker = await client.ticker([], symbol, venue);
+export function streamMarketTicker(symbol: string, venue: string, fields: string[] | undefined, invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
+  const defaultFields = ["bidPrice", "askPrice", "lastPrice"];
+  const chosenFields = (fields && fields.length > 0 ? fields : defaultFields);
 
-        if (!snapshot || !snapshot.bidPrice || !snapshot.askPrice || !snapshot.lastPrice) {
-          invocation.setResult([[NaN, NaN]]); // Send NaN if data is invalid
-          return;
-        }
+  // Map snapshot keys → numeric values we can push into Excel
+  const pluck = (snap: Ticker, key: string): number =>
+    snap[key as keyof Ticker] !== undefined
+      ? Number(snap[key as keyof Ticker])
+      : NaN;
 
-        const bid = parseFloat(snapshot.bidPrice);
-        const ask = parseFloat(snapshot.askPrice);
-        const last = parseFloat(snapshot.lastPrice);
+  const intervalId = setInterval(async () => {
+    try {
+      const snap = await client.ticker([], symbol, venue);
 
-        invocation.setResult([[bid, ask, last]]); // Send updated bid/ask/last prices to Excel
-      } catch (error) {
-        console.error("Error fetching market data:", error);
-        invocation.setResult([[NaN, NaN, NaN]]); // Send NaN in case of an error
+      if (!snap) {
+        invocation.setResult([Array(chosenFields.length).fill(NaN)]);
+        return;
       }
-    }, 1000); // Update every second
 
-    // Handle cancellation
-    invocation.onCanceled = () => {
-      clearInterval(intervalId); // Stop the interval when the user cancels the function
-    };
-  } catch (error) {
-    console.error("Error initializing streaming function:", error);
-    invocation.setResult([[NaN, NaN]]); // Send NaN in case of an initialization error
-  }
+      const row = chosenFields.map((f) => pluck(snap, f));
+      invocation.setResult([row]);
+    } catch (err) {
+      console.error("streamMarketTicker:", err);
+      invocation.setResult([Array(chosenFields.length).fill(NaN)]);
+    }
+  }, 1_000);                                // Update every second
+
+  invocation.onCanceled = () => clearInterval(intervalId);
 }
 
 /**
@@ -193,34 +219,74 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
 /**
  * Get the bid/ask/last price and size of a market.
  * Returns: bid price, bid size, ask price, ask size, last price, last size.
+ * For the field params, the possible values are:
+ * - askPrice
+ * - askSize
+ * - bidPrice
+ * - bidSize
+ * - dividend
+ * - dividendYield
+ * - epsAdj
+ * - high24h
+ * - lastPrice
+ * - lastSettlementPrice
+ * - lastSize
+ * - low24h
+ * - marketCap
+ * - open24h
+ * - openInterest
+ * - priceToEarnings
+ * - sessionHigh
+ * - sessionLow
+ * - sessionOpen
+ * - sessionVolume
+ * - sharesOutstandingWeightedAdj
+ * - symbol
+ * - timestamp
+ * - volume24h
+ * - volume30d
  * @customfunction
  * @param symbol Market symbol, e.g. "ES 20250620 CME Future"
  * @param venue Market venue, e.g. "CME"
+ * @param [fields] List of fields to stream, default value is ["bidPrice","bidSize","askPrice","askSize","lastPrice","lastSize"]
  * @helpurl https://excel.architect.co/functions_help.html#MARKETTICKER
  * @volatile
  */
-export async function marketTicker(symbol: string, venue: string): Promise<number[] []> {
-  let snapshot: Ticker = await client.ticker([], symbol, venue)
-  if (!snapshot) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.notAvailable,
-      "Received bad data from the server, please try again."
-    )
-  }
+export async function marketTicker(symbol: string, venue: string, fields: string[] | undefined): Promise<number[] []> {
+  const defaultFields = [
+    "bidPrice",
+    "bidSize",
+    "askPrice",
+    "askSize",
+    "lastPrice",
+    "lastSize",
+  ];
+  const chosenFields = fields && fields.length > 0 ? fields : defaultFields;
+
+  // Helper: pluck a numeric value (or NaN) from the snapshot
+  const pluck = (snap: Ticker, key: string): number =>
+    snap[key as keyof Ticker] !== undefined
+      ? Number(snap[key as keyof Ticker])
+      : NaN;
+
   try {
-    const bid_px: number = snapshot.bidPrice ? parseFloat(snapshot.bidPrice) : NaN;
-    const bid_sz: number = snapshot.bidSize ? parseFloat(snapshot.bidSize) : NaN;
-    const ask_px: number = snapshot.askPrice ? parseFloat(snapshot.askPrice) : NaN;
-    const ask_sz: number = snapshot.askSize ? parseFloat(snapshot.askSize) : NaN;
-    const last_px: number = snapshot.lastPrice ? parseFloat(snapshot.lastPrice) : NaN;
-    const last_sz: number = snapshot.lastSize ? parseFloat(snapshot.lastSize) : NaN;
-    const lastSettlementPrice: number = snapshot.lastSettlementPrice ? parseFloat(snapshot.lastSettlementPrice) : NaN;
-    return [[bid_px, bid_sz, ask_px, ask_sz, last_px, last_sz, lastSettlementPrice]]
-  } catch (error) {
+    const snap = await client.ticker([], symbol, venue);
+
+    if (!snap) {
+      throw new CustomFunctions.Error(
+        CustomFunctions.ErrorCode.notAvailable,
+        "Received bad data from the server, please try again.",
+      );
+    }
+
+    const row = chosenFields.map((f) => pluck(snap, f));
+    return [row]; // one-row 2-D array → a single row in Excel
+  } catch (err) {
+    if (err instanceof CustomFunctions.Error) throw err; // preserve Excel error
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
-      "Failed to parse bid/ask prices"
-    )
+      "Failed to fetch or parse market data.",
+    );
   }
 }
 

@@ -37,9 +37,9 @@
             }
         },
         {
-            "description": "Stream the bid/ask/last trade prices of a market in real-time.",
-            "id": "STREAMMARKETBBO",
-            "name": "STREAMMARKETBBO",
+            "description": "Stream the bid/ask/last prices of a market in real-time. Or other fields if specified.\n\nFor the field params, the possible values are:\n- askPrice\n- askSize\n- bidPrice\n- bidSize\n- dividend\n- dividendYield\n- epsAdj\n- high24h\n- lastPrice\n- lastSettlementPrice\n- lastSize\n- low24h\n- marketCap\n- open24h\n- openInterest\n- priceToEarnings\n- sessionHigh\n- sessionLow\n- sessionOpen\n- sessionVolume\n- sharesOutstandingWeightedAdj\n- symbol\n- timestamp\n- volume24h\n- volume30d",
+            "id": "STREAMMARKETTICKER",
+            "name": "STREAMMARKETTICKER",
             "options": {
                 "stream": true
             },
@@ -53,6 +53,12 @@
                     "description": "Market venue, e.g. \"CME\"",
                     "name": "venue",
                     "type": "string"
+                },
+                {
+                    "description": "List of fields to stream, default value is [\"bidPrice\",\"askPrice\",\"lastPrice\"]",
+                    "name": "fields",
+                    "optional": true,
+                    "type": "any"
                 }
             ],
             "result": {
@@ -85,7 +91,7 @@
             }
         },
         {
-            "description": "Get the bid/ask/last price and size of a market.\nReturns: bid price, bid size, ask price, ask size, last price, last size.",
+            "description": "Get the bid/ask/last price and size of a market.\nReturns: bid price, bid size, ask price, ask size, last price, last size.\nFor the field params, the possible values are:\n- askPrice\n- askSize\n- bidPrice\n- bidSize\n- dividend\n- dividendYield\n- epsAdj\n- high24h\n- lastPrice\n- lastSettlementPrice\n- lastSize\n- low24h\n- marketCap\n- open24h\n- openInterest\n- priceToEarnings\n- sessionHigh\n- sessionLow\n- sessionOpen\n- sessionVolume\n- sharesOutstandingWeightedAdj\n- symbol\n- timestamp\n- volume24h\n- volume30d",
             "helpUrl": "https://excel.architect.co/functions_help.html#MARKETTICKER",
             "id": "MARKETTICKER",
             "name": "MARKETTICKER",
@@ -102,6 +108,12 @@
                     "description": "Market venue, e.g. \"CME\"",
                     "name": "venue",
                     "type": "string"
+                },
+                {
+                    "description": "List of fields to stream, default value is [\"bidPrice\",\"bidSize\",\"askPrice\",\"askSize\",\"lastPrice\",\"lastSize\"]",
+                    "name": "fields",
+                    "optional": true,
+                    "type": "any"
                 }
             ],
             "result": {
