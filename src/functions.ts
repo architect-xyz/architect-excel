@@ -167,7 +167,7 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
  * @param invocation Streaming invocation object
  * @streaming
  */
-export function streamMarketTicker(symbol: string, venue: string, fields: string[][] | undefined, invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
+export function streamMarketTicker(symbol: string, venue: string, fields: string[][], invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
   const defaultFields = ["bidPrice", "askPrice", "lastPrice"];
   const chosenFields = normalizeFields(fields) ?? defaultFields;
 
@@ -226,7 +226,7 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
  * @helpurl https://excel.architect.co/functions_help.html#MARKETTICKER
  * @volatile
  */
-export async function marketTicker(symbol: string, venue: string, fields?: string[][] | undefined): Promise<number[] []> {
+export async function marketTicker(symbol: string, venue: string, fields?: string[][]): Promise<number[] []> {
   const defaultFields = [
     "bidPrice",
     "bidSize",

@@ -56,9 +56,10 @@
                 },
                 {
                     "description": "List of fields to stream, default value is [\"bidPrice\",\"askPrice\",\"lastPrice\"]",
+                    "dimensionality": "matrix",
                     "name": "fields",
                     "optional": true,
-                    "type": "any"
+                    "type": "string"
                 }
             ],
             "result": {
@@ -111,9 +112,10 @@
                 },
                 {
                     "description": "List of fields to stream, default value is [\"bidPrice\",\"bidSize\",\"askPrice\",\"askSize\",\"lastPrice\",\"lastSize\"]",
+                    "dimensionality": "matrix",
                     "name": "fields",
                     "optional": true,
-                    "type": "any"
+                    "type": "string"
                 }
             ],
             "result": {
