@@ -226,7 +226,7 @@ export async function marketMid(symbol: string, venue: string): Promise<number> 
  * @helpurl https://excel.architect.co/functions_help.html#MARKETTICKER
  * @volatile
  */
-export async function marketTicker(symbol: string, venue: string, fields: string[][] | undefined): Promise<number[] []> {
+export async function marketTicker(symbol: string, venue: string, fields?: string[][] | undefined): Promise<number[] []> {
   const defaultFields = [
     "bidPrice",
     "bidSize",
