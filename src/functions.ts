@@ -599,7 +599,7 @@ export async function fillsAnalysis(
   accountName: string,
   symbols: string[][]
 ): Promise<string[][]> {
-  /* ---------- 0 . upfront validation & prep ---------- */
+  /* ── 0. validate input ───────────────────────────────────────────── */
   if (!symbols?.length) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -607,44 +607,32 @@ export async function fillsAnalysis(
     );
   }
 
-  const fromInclusive = getStartOfTradingDate();               // 17:00 ET of prior calendar-day
-  const requested = new Set(normalizeFields(symbols) ?? []);   // O(1) membership tests
-  const wantAll   = requested.size === 0;                      // micro-branch: avoid .size in loop
+  /* ── 1. normalise symbols & fetch fills ──────────────────────────── */
+  const requested = new Set(normalizeFields(symbols) ?? []);        // unique, O(1) lookup
+  const wantAll   = requested.size === 0;
 
-  /* ---------- 1 . pull fills ---------- */
+  const fromInclusive = getStartOfTradingDate();                    // 17:00 ET previous calendar-day
   const snapshot: HistoricalFillsResponse = await client.historicalFills(
-    [],                                                       // no paging
+    [],
     { account: accountName, fromInclusive: fromInclusive.toISOString() }
   );
+  const fills = snapshot?.fills ?? [];
 
-  const fills = snapshot?.fills;
-  if (!fills?.length) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.notAvailable,
-      "No fills returned for the current trading day."
-    );
-  }
-
-  /* ---------- 2 . single-pass aggregation ---------- */
+  /* ── 2. aggregate in one pass ────────────────────────────────────── */
   interface Agg {
     lastTs: string;
     tradeCount: number;
-    buyQty: number;   buyPQ: number;        // ∑ qty · price  (buy)
-    sellQty: number;  sellPQ: number;       // ∑ qty · price  (sell)
+    buyQty: number;   buyPQ: number;        // Σ(qty·price) buys
+    sellQty: number;  sellPQ: number;       // Σ(qty·price) sells
   }
-
-  // Plain dictionary with no prototype chain → cheapest possible property access.
   const agg: Record<string, Agg> = Object.create(null);
 
   for (let i = 0; i < fills.length; ++i) {
     const f = fills[i];
-
-    // Fast symbol filter (Set lookup is O(1))
     if (!wantAll && !requested.has(f.symbol)) continue;
 
     let a = agg[f.symbol];
     if (!a) {
-      // Initialise *only once per symbol*
       a = agg[f.symbol] = {
         lastTs: "",
         tradeCount: 0,
@@ -655,9 +643,8 @@ export async function fillsAnalysis(
 
     ++a.tradeCount;
 
-    // Unary + is ~2 × faster than Number() for string-→-number coercion
-    const qty   = +f.quantity;
-    if (qty === 0) continue;                                  // ignore zero-qty fills early
+    const qty   = +f.quantity;                           // fast string→number
+    if (qty === 0) continue;                             // ignore odd zero-qty fills
     const price = +f.price;
 
     if (f.dir === "buy") {
@@ -668,60 +655,52 @@ export async function fillsAnalysis(
       a.sellPQ  += qty * price;
     }
 
-    // Keep most-recent timestamp (tradeTime falls back to recvTime)
     const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
     if (ts && ts > a.lastTs) a.lastTs = ts;
   }
 
-  /* ---------- 3 . shape result for Excel ---------- */
-const header = [
-  "Timestamp",
-  "Symbols",
-  "TradePosition",
-  "TradeCount",
-  "AverageBuyPrice",
-  "BuyQuantity",
-  "AverageSellPrice",
-  "SellQuantity",
-] as const;
+  /* ── 3. shape output for Excel ───────────────────────────────────── */
+  const header = [
+    "Timestamp",
+    "Symbols",
+    "TradePosition",
+    "TradeCount",
+    "AverageBuyPrice",
+    "BuyQuantity",
+    "AverageSellPrice",
+    "SellQuantity",
+  ] as const;
 
-const rows: string[][] = [header.slice()];          // copy to avoid readonly
+  const rows: string[][] = [header.slice()];
 
-// 3 a. rows for symbols that *did* have fills
-for (const sym in agg) {
-  const a = agg[sym];
-  rows.push([
-    a.lastTs,
-    sym,
-    String(a.buyQty - a.sellQty),                       // net position
-    String(a.tradeCount),
-    a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "", // avg buy
-    String(a.buyQty),
-    a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "", // avg sell
-    String(a.sellQty),
-  ]);
-}
-
-/* 3 b. rows for requested symbols that never showed up in `fills`
-   (Set → Array to iterate) */
-if (!wantAll) {
-  for (const sym of Array.from(requested)) {
-    if (agg[sym]) continue;                             // already handled
+  // 3a. rows for symbols that had at least one fill
+  for (const sym in agg) {
+    const a = agg[sym];
     rows.push([
-      "",      // Timestamp
-      sym,     // Symbols
-      "",      // TradePosition
-      "",      // TradeCount
-      "",      // AverageBuyPrice
-      "",      // BuyQuantity
-      "",      // AverageSellPrice
-      "",      // SellQuantity
+      a.lastTs,
+      sym,
+      String(a.buyQty - a.sellQty),
+      String(a.tradeCount),
+      a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
+      String(a.buyQty),
+      a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
+      String(a.sellQty),
     ]);
   }
-}
 
-return rows;
+  // 3b. rows for requested symbols with *no* fills
+  if (!wantAll) {
+    for (const sym of requested) {
+      if (agg[sym]) continue;                            // already included
+      rows.push([
+        "",  // Timestamp
+        sym, // Symbols
+        "", "", "", "", "", "",
+      ]);
+    }
+  }
 
+  return rows;
 }
 
 
