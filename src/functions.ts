@@ -375,7 +375,7 @@ export function streamAccountPositionValues(
 ): void {
   // Hoist constants to avoid re‑allocating them each tick
 
-  const headerRow      = ["Symbol", "Quantity", "Cost Basis"];
+  const headerRow      = ["Symbol", "NetPosition", "Cost Basis"];
   const chosenSymbols = normalizeFields(symbols) ?? [];
   const includeAll     = show_all ?? false;
 
@@ -674,33 +674,54 @@ export async function fillsAnalysis(
   }
 
   /* ---------- 3 . shape result for Excel ---------- */
-  const rows: string[][] = [[
-    "Timestamp",
-    "Symbols",
-    "TradePosition",
-    "TradeCount",
-    "AverageBuyPrice",
-    "BuyQuantity",
-    "AverageSellPrice",
-    "SellQuantity",
-  ]];
+const header = [
+  "Timestamp",
+  "Symbols",
+  "TradePosition",
+  "TradeCount",
+  "AverageBuyPrice",
+  "BuyQuantity",
+  "AverageSellPrice",
+  "SellQuantity",
+] as const;
 
-  // Object keys (not Map) are faster for <O(10 k) distinct symbols
-  for (const sym in agg) {
-    const a = agg[sym];
+const rows: string[][] = [header.slice()];          // copy to avoid readonly
+
+// 3 a. rows for symbols that *did* have fills
+for (const sym in agg) {
+  const a = agg[sym];
+  rows.push([
+    a.lastTs,
+    sym,
+    String(a.buyQty - a.sellQty),                       // net position
+    String(a.tradeCount),
+    a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "", // avg buy
+    String(a.buyQty),
+    a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "", // avg sell
+    String(a.sellQty),
+  ]);
+}
+
+/* 3 b. rows for requested symbols that never showed up in `fills`
+   (Set → Array to iterate) */
+if (!wantAll) {
+  for (const sym of Array.from(requested)) {
+    if (agg[sym]) continue;                             // already handled
     rows.push([
-      a.lastTs,
-      sym,
-      String(a.buyQty - a.sellQty),                               // net position
-      String(a.tradeCount),
-      a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",         // avg buy
-      String(a.buyQty),
-      a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",         // avg sell
-      String(a.sellQty),
+      "",      // Timestamp
+      sym,     // Symbols
+      "",      // TradePosition
+      "",      // TradeCount
+      "",      // AverageBuyPrice
+      "",      // BuyQuantity
+      "",      // AverageSellPrice
+      "",      // SellQuantity
     ]);
   }
+}
 
-  return rows;
+return rows;
+
 }
 
 
@@ -730,7 +751,7 @@ function getStartOfTradingDate(): Date {
 
   // If we haven’t reached 17:00 in New York yet, the trading day started “yesterday”
   if (nowNY < startNY) {
-    startNY.setDate(startNY.getDate() - 1);
+    startNY.setDate(startNY.getDate() - 2);
   }
 
   // Convert the New York wall-clock time back to the correct absolute instant
