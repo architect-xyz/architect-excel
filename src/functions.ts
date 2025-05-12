@@ -20,7 +20,7 @@ https://learn.microsoft.com/en-us/office/dev/add-ins/excel/custom-functions-json
 /// <reference types="office-js" />
 
 import { create, Client, Config } from '@afintech/sdk/env/browser';
-import { AccountPosition, Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
+import { HistoricalFillsResponse, Ticker } from 'node_modules/@afintech/sdk/dist/esm/graphql/graphql';
 
 
 let config: Config = {
@@ -165,21 +165,26 @@ export async function marketBBO(symbol: string, venue: string): Promise<number[]
  * @param venue Market venue, e.g. "CME"
  * @param [fields] List of fields to stream, default value is ["bidPrice","askPrice","lastPrice"]
  * @param invocation Streaming invocation object
+ * @helpurl https://excel.architect.co/functions_help.html#STREAMMARKETTICKER
  * @streaming
  */
-export function streamMarketTicker(symbol: string, venue: string, fields: string[][], invocation: CustomFunctions.StreamingInvocation<number[][]>): void {
-  const defaultFields = ["bidPrice", "askPrice", "lastPrice"];
-  const chosenFields = normalizeFields(fields) ?? defaultFields;
+export function streamMarketTicker(
+  symbol: string,
+  venue: string,
+  fields: string[][],
+  invocation: CustomFunctions.StreamingInvocation<number[][]>,
+): void {
+  const defaultFields = ["bidPrice", "askPrice", "lastPrice"] as const;
+  const chosenFields = (normalizeFields(fields) ?? [...defaultFields]) as (keyof Ticker)[];
 
-  // Map snapshot keys → numeric values we can push into Excel
-  const pluck = (snap: Ticker, key: string): number =>
-    snap[key as keyof Ticker] !== undefined
-      ? Number(snap[key as keyof Ticker])
-      : NaN;
+  // Helper: pull numeric values (NaN if absent)
+  const pluck = (snap: Pick<Ticker, keyof Ticker>, key: keyof Ticker): number =>
+    snap[key] !== undefined ? Number(snap[key]) : NaN;
 
   const intervalId = setInterval(async () => {
     try {
-      const snap = await client.ticker([], symbol, venue);
+      // 🔑  Only request the chosen fields
+      const snap = await client.ticker(chosenFields, symbol, venue);
 
       if (!snap) {
         invocation.setResult([Array(chosenFields.length).fill(NaN)]);
@@ -192,7 +197,7 @@ export function streamMarketTicker(symbol: string, venue: string, fields: string
       console.error("streamMarketTicker:", err);
       invocation.setResult([Array(chosenFields.length).fill(NaN)]);
     }
-  }, 1_000);                                // Update every second
+  }, 1_000); // update every second
 
   invocation.onCanceled = () => clearInterval(intervalId);
 }
@@ -583,6 +588,142 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
   const result = symbols.map(symbol => [symbol]);
   return result;
 }
+
+/**
+ * Gets fills analysis for a given account and string of symbols for the current trading day.
+ * @param accountName Account name, gotten from accountList function.
+ * @param symbols     Market symbols, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"]
+ * @customfunction
+ */
+export async function fillsAnalysis(
+  accountName: string,
+  symbols: string[],
+): Promise<string[][]> {
+  // 1.  Pull the day’s fills
+  const fromInclusive = getStartOfTradingDate();             // 17:00 ET the prior calendar-day
+  const snapshot: HistoricalFillsResponse = await client.historicalFills(
+    [],                                                      // no paging
+    { account: accountName, fromInclusive: fromInclusive.toISOString() },
+  );
+
+  if (!snapshot || !snapshot.fills?.length) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      "No fills returned for the current trading day.",
+    );
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 2.  Aggregate per-symbol                                           *
+   *      netTradePosition   = buyQty – sellQty                         *
+   *      avgBuyPrice   = Σ(price·qty) / buyQty  (blank if 0)           *
+   *      avgSellPrice  = Σ(price·qty) / sellQty (blank if 0)           *
+   *      tradeCount    = number of fills                               *
+   *      timestamp     = most-recent tradeTime/recvTime ISO string     *
+   * ------------------------------------------------------------------ */
+  type Agg = {
+    lastTs: string;
+    tradeCount: number;
+    buyQty: number;
+    buyNotional: number;
+    sellQty: number;
+    sellNotional: number;
+  };
+  const agg: Record<string, Agg> = {};
+
+  for (const f of snapshot.fills) {
+    if (symbols.length && !symbols.includes(f.symbol)) continue;   // keep only requested symbols
+
+    const sym = f.symbol;
+    if (!agg[sym]) {
+      agg[sym] = { lastTs: "", tradeCount: 0, buyQty: 0, buyNotional: 0, sellQty: 0, sellNotional: 0 };
+    }
+    const a = agg[sym];
+
+    a.tradeCount += 1;
+
+    const qty   = Number(f.quantity);
+    const price = Number(f.price);
+
+    if (f.dir === "buy") {
+      a.buyQty       += qty;
+      a.buyNotional  += qty * price;
+    } else {
+      a.sellQty      += qty;
+      a.sellNotional += qty * price;
+    }
+
+    const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
+    if (ts && ts > a.lastTs) a.lastTs = ts;                     // keep the most-recent timestamp
+  }
+
+  // 3.  Shape results for Excel
+  const rows: string[][] = [
+    [
+      "Timestamp",
+      "Symbols",
+      "TradePosition",
+      "TradeCount",
+      "AverageBuyPrice",
+      "BuyQuantity",
+      "AverageSellPrice",
+      "SellQuantity",
+    ],
+  ];
+
+  for (const [sym, a] of Object.entries(agg)) {
+    const avgBuy  = a.buyQty  ? (a.buyNotional  / a.buyQty)  : undefined;
+    const avgSell = a.sellQty ? (a.sellNotional / a.sellQty) : undefined;
+
+    rows.push([
+      a.lastTs || "",                                    // Timestamp
+      sym,                                               // Symbols
+      (a.buyQty - a.sellQty).toString(),                 // TradePosition (net)
+      a.tradeCount.toString(),                           // TradeCount
+      avgBuy  !== undefined ? avgBuy.toFixed(2)  : "",   // AverageBuyPrice
+      a.buyQty.toString(),                               // BuyQuantity
+      avgSell !== undefined ? avgSell.toFixed(2) : "",   // AverageSellPrice
+      a.sellQty.toString(),                              // SellQuantity
+    ]);
+  }
+
+  return rows;
+}
+
+
+/**
+ * Return the timestamp of the *current* trading-day open
+ * (5 p.m. Eastern Time — i.e. America/New_York).
+ *
+ * • If it’s still **before** 17:00 ET, the trading day started
+ *   at 17:00 ET **yesterday**.  
+ * • Otherwise it started at 17:00 ET **today**.
+ *
+ */
+function getStartOfTradingDate(): Date {
+  const now = new Date();
+
+  // How far New York time is ahead (+) or behind (–) the local clock *right now*
+  const nyOffsetMs =
+    new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" })).getTime() -
+    now.getTime();
+
+  // `now` expressed on the New York wall-clock
+  const nowNY = new Date(now.getTime() + nyOffsetMs);
+
+  // 17:00 on that New York calendar date
+  const startNY = new Date(nowNY);
+  startNY.setHours(17, 0, 0, 0);
+
+  // If we haven’t reached 17:00 in New York yet, the trading day started “yesterday”
+  if (nowNY < startNY) {
+    startNY.setDate(startNY.getDate() - 1);
+  }
+
+  // Convert the New York wall-clock time back to the correct absolute instant
+  return new Date(startNY.getTime() - nyOffsetMs);
+}
+
 
 Office.onReady(async (info) => {
   try {

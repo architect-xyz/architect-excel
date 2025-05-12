@@ -38,6 +38,7 @@
         },
         {
             "description": "Stream the bid/ask/last prices of a market in real-time. Or other fields if specified.\n\nFor the field params, the possible values are: askPrice, askSize, bidPrice, bidSize, lastPrice, lastSize, lastSettlementPrice, timestamp, dividend, dividendYield, epsAdj, high24h, low24h, marketCap, open24h, openInterest, priceToEarnings, sessionHigh, sessionLow, sessionOpen, sessionVolume, sharesOutstandingWeightedAdj, symbol, timestamp, volume24h, volume30d",
+            "helpUrl": "https://excel.architect.co/functions_help.html#STREAMMARKETTICKER",
             "id": "STREAMMARKETTICKER",
             "name": "STREAMMARKETTICKER",
             "options": {
@@ -236,6 +237,28 @@
                 {
                     "description": "Market name, e.g. \"ES\", \"NQ\", \"RTY\"",
                     "name": "market_name",
+                    "type": "string"
+                }
+            ],
+            "result": {
+                "dimensionality": "matrix",
+                "type": "string"
+            }
+        },
+        {
+            "description": "Gets fills analysis for a given account and string of symbols for the current trading day.",
+            "id": "FILLSANALYSIS",
+            "name": "FILLSANALYSIS",
+            "parameters": [
+                {
+                    "description": "Account name, gotten from accountList function.",
+                    "name": "accountName",
+                    "type": "string"
+                },
+                {
+                    "description": "Market symbols, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"]",
+                    "name": "symbols",
+                    "repeating": true,
                     "type": "string"
                 }
             ],
