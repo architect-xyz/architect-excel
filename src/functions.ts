@@ -614,7 +614,8 @@ export async function fillsAnalysis(
   const fromInclusive = getStartOfTradingDate();                    // 17:00 ET previous calendar-day
   const snapshot: HistoricalFillsResponse = await client.historicalFills(
     [],
-    { account: accountName, fromInclusive: fromInclusive.toISOString() }
+    // { account: accountName, fromInclusive: fromInclusive.toISOString() }
+    {}
   );
 
   console.log("fromInclusive:", fromInclusive.toISOString());
@@ -733,7 +734,7 @@ function getStartOfTradingDate(): Date {
 
   // If we haven’t reached 17:00 in New York yet, the trading day started “yesterday”
   if (nowNY < startNY) {
-    startNY.setDate(startNY.getDate() - 1);
+    startNY.setDate(startNY.getDate() - 5);
   }
 
   // Convert the New York wall-clock time back to the correct absolute instant
