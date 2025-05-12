@@ -257,8 +257,8 @@
                 },
                 {
                     "description": "Market symbols, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"]",
+                    "dimensionality": "matrix",
                     "name": "symbols",
-                    "repeating": true,
                     "type": "string"
                 }
             ],

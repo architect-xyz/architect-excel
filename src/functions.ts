@@ -597,93 +597,106 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
  */
 export async function fillsAnalysis(
   accountName: string,
-  symbols: string[],
+  symbols: string[][]
 ): Promise<string[][]> {
-  // 1.  Pull the day’s fills
-  const fromInclusive = getStartOfTradingDate();             // 17:00 ET the prior calendar-day
-  const snapshot: HistoricalFillsResponse = await client.historicalFills(
-    [],                                                      // no paging
-    { account: accountName, fromInclusive: fromInclusive.toISOString() },
-  );
-
-  if (!snapshot || !snapshot.fills?.length) {
+  /* ---------- 0 . upfront validation & prep ---------- */
+  if (!symbols?.length) {
     throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.notAvailable,
-      "No fills returned for the current trading day.",
+      CustomFunctions.ErrorCode.invalidValue,
+      "No symbols provided."
     );
   }
 
-  /* ------------------------------------------------------------------ *
-   * 2.  Aggregate per-symbol                                           *
-   *      netTradePosition   = buyQty – sellQty                         *
-   *      avgBuyPrice   = Σ(price·qty) / buyQty  (blank if 0)           *
-   *      avgSellPrice  = Σ(price·qty) / sellQty (blank if 0)           *
-   *      tradeCount    = number of fills                               *
-   *      timestamp     = most-recent tradeTime/recvTime ISO string     *
-   * ------------------------------------------------------------------ */
-  type Agg = {
-    lastTs: string;
-    tradeCount: number;
-    buyQty: number;
-    buyNotional: number;
-    sellQty: number;
-    sellNotional: number;
-  };
-  const agg: Record<string, Agg> = {};
+  const fromInclusive = getStartOfTradingDate();               // 17:00 ET of prior calendar-day
+  const requested = new Set(normalizeFields(symbols) ?? []);   // O(1) membership tests
+  const wantAll   = requested.size === 0;                      // micro-branch: avoid .size in loop
 
-  for (const f of snapshot.fills) {
-    if (symbols.length && !symbols.includes(f.symbol)) continue;   // keep only requested symbols
+  /* ---------- 1 . pull fills ---------- */
+  const snapshot: HistoricalFillsResponse = await client.historicalFills(
+    [],                                                       // no paging
+    { account: accountName, fromInclusive: fromInclusive.toISOString() }
+  );
 
-    const sym = f.symbol;
-    if (!agg[sym]) {
-      agg[sym] = { lastTs: "", tradeCount: 0, buyQty: 0, buyNotional: 0, sellQty: 0, sellNotional: 0 };
-    }
-    const a = agg[sym];
-
-    a.tradeCount += 1;
-
-    const qty   = Number(f.quantity);
-    const price = Number(f.price);
-
-    if (f.dir === "buy") {
-      a.buyQty       += qty;
-      a.buyNotional  += qty * price;
-    } else {
-      a.sellQty      += qty;
-      a.sellNotional += qty * price;
-    }
-
-    const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
-    if (ts && ts > a.lastTs) a.lastTs = ts;                     // keep the most-recent timestamp
+  const fills = snapshot?.fills;
+  if (!fills?.length) {
+    throw new CustomFunctions.Error(
+      CustomFunctions.ErrorCode.notAvailable,
+      "No fills returned for the current trading day."
+    );
   }
 
-  // 3.  Shape results for Excel
-  const rows: string[][] = [
-    [
-      "Timestamp",
-      "Symbols",
-      "TradePosition",
-      "TradeCount",
-      "AverageBuyPrice",
-      "BuyQuantity",
-      "AverageSellPrice",
-      "SellQuantity",
-    ],
-  ];
+  /* ---------- 2 . single-pass aggregation ---------- */
+  interface Agg {
+    lastTs: string;
+    tradeCount: number;
+    buyQty: number;   buyPQ: number;        // ∑ qty · price  (buy)
+    sellQty: number;  sellPQ: number;       // ∑ qty · price  (sell)
+  }
 
-  for (const [sym, a] of Object.entries(agg)) {
-    const avgBuy  = a.buyQty  ? (a.buyNotional  / a.buyQty)  : undefined;
-    const avgSell = a.sellQty ? (a.sellNotional / a.sellQty) : undefined;
+  // Plain dictionary with no prototype chain → cheapest possible property access.
+  const agg: Record<string, Agg> = Object.create(null);
 
+  for (let i = 0; i < fills.length; ++i) {
+    const f = fills[i];
+
+    // Fast symbol filter (Set lookup is O(1))
+    if (!wantAll && !requested.has(f.symbol)) continue;
+
+    let a = agg[f.symbol];
+    if (!a) {
+      // Initialise *only once per symbol*
+      a = agg[f.symbol] = {
+        lastTs: "",
+        tradeCount: 0,
+        buyQty: 0,  buyPQ: 0,
+        sellQty: 0, sellPQ: 0,
+      };
+    }
+
+    ++a.tradeCount;
+
+    // Unary + is ~2 × faster than Number() for string-→-number coercion
+    const qty   = +f.quantity;
+    if (qty === 0) continue;                                  // ignore zero-qty fills early
+    const price = +f.price;
+
+    if (f.dir === "buy") {
+      a.buyQty += qty;
+      a.buyPQ  += qty * price;
+    } else {
+      a.sellQty += qty;
+      a.sellPQ  += qty * price;
+    }
+
+    // Keep most-recent timestamp (tradeTime falls back to recvTime)
+    const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
+    if (ts && ts > a.lastTs) a.lastTs = ts;
+  }
+
+  /* ---------- 3 . shape result for Excel ---------- */
+  const rows: string[][] = [[
+    "Timestamp",
+    "Symbols",
+    "TradePosition",
+    "TradeCount",
+    "AverageBuyPrice",
+    "BuyQuantity",
+    "AverageSellPrice",
+    "SellQuantity",
+  ]];
+
+  // Object keys (not Map) are faster for <O(10 k) distinct symbols
+  for (const sym in agg) {
+    const a = agg[sym];
     rows.push([
-      a.lastTs || "",                                    // Timestamp
-      sym,                                               // Symbols
-      (a.buyQty - a.sellQty).toString(),                 // TradePosition (net)
-      a.tradeCount.toString(),                           // TradeCount
-      avgBuy  !== undefined ? avgBuy.toFixed(2)  : "",   // AverageBuyPrice
-      a.buyQty.toString(),                               // BuyQuantity
-      avgSell !== undefined ? avgSell.toFixed(2) : "",   // AverageSellPrice
-      a.sellQty.toString(),                              // SellQuantity
+      a.lastTs,
+      sym,
+      String(a.buyQty - a.sellQty),                               // net position
+      String(a.tradeCount),
+      a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",         // avg buy
+      String(a.buyQty),
+      a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",         // avg sell
+      String(a.sellQty),
     ]);
   }
 
