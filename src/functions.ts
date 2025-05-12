@@ -617,7 +617,7 @@ export async function fillsAnalysis(
     { account: accountName, fromInclusive: fromInclusive.toISOString() }
   );
 
-  console.log("fromInclusive:", fromInclusive);
+  console.log("fromInclusive:", fromInclusive.toISOString());
   console.log("Fills snapshot:", snapshot);
   const fills = snapshot?.fills ?? [];
 
@@ -733,7 +733,7 @@ function getStartOfTradingDate(): Date {
 
   // If we haven’t reached 17:00 in New York yet, the trading day started “yesterday”
   if (nowNY < startNY) {
-    startNY.setDate(startNY.getDate() - 2);
+    startNY.setDate(startNY.getDate() - 1);
   }
 
   // Convert the New York wall-clock time back to the correct absolute instant
