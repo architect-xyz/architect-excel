@@ -616,6 +616,9 @@ export async function fillsAnalysis(
     [],
     { account: accountName, fromInclusive: fromInclusive.toISOString() }
   );
+
+  console.log("fromInclusive:", fromInclusive);
+  console.log("Fills snapshot:", snapshot);
   const fills = snapshot?.fills ?? [];
 
   /* ── 2. aggregate in one pass ────────────────────────────────────── */
