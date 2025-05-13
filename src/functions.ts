@@ -627,7 +627,6 @@ export function streamFillsAnalysis(
 
     /* ── 2 . aggregate in one pass ───────────────────────────────────── */
     interface Agg {
-      lastTs: string;
       tradeCount: number;
       buyQty: number;   buyPQ: number;
       sellQty: number;  sellPQ: number;
@@ -642,7 +641,6 @@ export function streamFillsAnalysis(
       let a = agg[f.symbol];
       if (!a) {
         a = agg[f.symbol] = {
-          lastTs: "",
           tradeCount: 0,
           buyQty: 0,  buyPQ: 0,
           sellQty: 0, sellPQ: 0,
@@ -663,14 +661,10 @@ export function streamFillsAnalysis(
         a.sellQty += qty;
         a.sellPQ  += qty * price;
       }
-
-      const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
-      if (ts && ts > a.lastTs) a.lastTs = ts;
     }
 
     /* ── 3 . shape output for Excel in the *correct* order ───────────── */
     const header = [
-      "Timestamp",
       "Symbols",
       "TradePosition",
       "TradeCount",
@@ -688,7 +682,6 @@ export function streamFillsAnalysis(
       const a = agg[sym];
       if (a) {
         rows.push([
-          a.lastTs,
           sym,
           String(a.buyQty - a.sellQty),
           String(a.tradeCount),
