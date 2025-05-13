@@ -693,7 +693,7 @@ export function streamFillsAnalysis(
       } else {
         // symbol never appeared in fills → blank metrics
         rows.push([
-          "", sym, "", "", "", "", "", "",
+          sym, "", "", "", "", "", "",
         ]);
       }
     }
