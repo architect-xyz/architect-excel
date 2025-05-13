@@ -590,118 +590,106 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
 }
 
 /**
- * Gets fills analysis for a given account and string of symbols for the current trading day.
- * @param accountName Account name, gotten from accountList function.
- * @param symbols     Market symbols, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"]
- * @param invocation Streaming invocation object
- * @param [number_of_days] Number of days to look back, default is 1 day.
+ * Streams a rolling fills analysis table that refreshes every second.
+ *
+ * @param accountName     Account name (see accountList()).
+ * @param [symbols]         1- or 2-D Excel range of symbols -– leave blank for “all”.
+ * @param [number_of_days]  OPTIONAL look-back window; defaults to 1 (today’s trading day).
+ * @param invocation      Excel streaming invocation (MUST be last).
  * @customfunction
  */
 export function streamFillsAnalysis(
   accountName: string,
-  symbols: string[][],
+  symbols: string[][] | string,
   number_of_days: number,
   invocation: CustomFunctions.StreamingInvocation<string[][]>,
 ): void {
-  /* ── 0 . validate input ──────────────────────────────────────────── */
-  if (!symbols?.length) {
-    throw new CustomFunctions.Error(
-      CustomFunctions.ErrorCode.invalidValue,
-      "No symbols provided."
-    );
-  }
+  /* ── 0 . normalise symbols ────────────────────────────────────────── */
+  // Accept:  undefined | "" | [][]  ⇒ wantAll === true
+  const ordered: string[] = normalizeFields(symbols) ?? [];
+  const requested = new Set(ordered);
+  const wantAll   = ordered.length === 0;
 
-  /* ── 1 . normalise symbols & fetch fills ─────────────────────────── */
-  const ordered: string[] = normalizeFields(symbols) ?? [];   // <-- keeps caller order
-  const requested = new Set(ordered);                         // O(1) membership tests
-  const wantAll   = ordered.length === 0;                     // edge-case: caller asked for "all"
-
+  /* ── 1 . start periodic refresh ───────────────────────────────────── */
   const intervalId = setInterval(async () => {
+    try {
+      const fromInclusive = getStartOfTradingDate(number_of_days ?? 1).toISOString();
+      const snapshot      = await client.historicalFills([], { account: accountName, fromInclusive });
+      const fills         = snapshot?.fills ?? [];
 
-    const fromInclusive = getStartOfTradingDate(number_of_days).toISOString();
-    const snapshot: HistoricalFillsResponse = await client.historicalFills(
-      [],
-      { account: accountName, fromInclusive}
-    );
-    const fills = snapshot?.fills ?? [];
+      /* ── 2 . aggregate in one pass ─────────────────────────────────── */
+      interface Agg {
+        tradeCount: number;
+        buyQty:    number; buyPQ:  number;
+        sellQty:   number; sellPQ: number;
+      }
+      const agg: Record<string, Agg> = Object.create(null);
+      const seenOrder: string[] = [];      // remember order when wantAll === true
 
-    /* ── 2 . aggregate in one pass ───────────────────────────────────── */
-    interface Agg {
-      tradeCount: number;
-      buyQty: number;   buyPQ: number;
-      sellQty: number;  sellPQ: number;
-    }
-    const agg: Record<string, Agg> = Object.create(null);
-    const seenOrder: string[] = [];          // order-of-first-appearance when wantAll === true
+      for (const f of fills) {
+        if (!wantAll && !requested.has(f.symbol)) continue;
 
-    for (let i = 0; i < fills.length; ++i) {
-      const f = fills[i];
-      if (!wantAll && !requested.has(f.symbol)) continue;
+        let a = agg[f.symbol];
+        if (!a) {
+          a = agg[f.symbol] = { tradeCount: 0, buyQty: 0, buyPQ: 0, sellQty: 0, sellPQ: 0 };
+          if (wantAll) seenOrder.push(f.symbol);
+        }
 
-      let a = agg[f.symbol];
-      if (!a) {
-        a = agg[f.symbol] = {
-          tradeCount: 0,
-          buyQty: 0,  buyPQ: 0,
-          sellQty: 0, sellPQ: 0,
-        };
-        if (wantAll) seenOrder.push(f.symbol);   // remember creation order only when caller said "all"
+        ++a.tradeCount;
+
+        const qty   = +f.quantity;
+        if (!qty) continue;
+        const price = +f.price;
+
+        if (f.dir === "buy") {
+          a.buyQty += qty;
+          a.buyPQ  += qty * price;
+        } else {
+          a.sellQty += qty;
+          a.sellPQ  += qty * price;
+        }
       }
 
-      ++a.tradeCount;
+      /* ── 3 . shape output for Excel ───────────────────────────────── */
+      const header = [
+        "Symbols",
+        "TradePosition",
+        "TradeCount",
+        "AverageBuyPrice",
+        "BuyQuantity",
+        "AverageSellPrice",
+        "SellQuantity",
+      ] as const;
 
-      const qty   = +f.quantity;
-      if (qty === 0) continue;
-      const price = +f.price;
+      const rows: string[][] = [header.slice()];
+      const symbolsToEmit    = wantAll ? seenOrder : ordered;
 
-      if (f.dir === "buy") {
-        a.buyQty += qty;
-        a.buyPQ  += qty * price;
-      } else {
-        a.sellQty += qty;
-        a.sellPQ  += qty * price;
+      for (const sym of symbolsToEmit) {
+        const a = agg[sym];
+        rows.push(a
+          ? [
+              sym,
+              String(a.buyQty - a.sellQty),
+              String(a.tradeCount),
+              a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
+              String(a.buyQty),
+              a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
+              String(a.sellQty),
+            ]
+          : [sym, "", "", "", "", "", ""],
+        );
       }
+
+      invocation.setResult(rows);
+    } catch (err) {
+      // propagate the error to Excel and stop the timer
+      clearInterval(intervalId);
     }
+  }, 1_000);
 
-    /* ── 3 . shape output for Excel in the *correct* order ───────────── */
-    const header = [
-      "Symbols",
-      "TradePosition",
-      "TradeCount",
-      "AverageBuyPrice",
-      "BuyQuantity",
-      "AverageSellPrice",
-      "SellQuantity",
-    ] as const;
-
-    const rows: string[][] = [header.slice()];
-
-    const symbolsToEmit = wantAll ? seenOrder : ordered;
-
-    for (const sym of symbolsToEmit) {
-      const a = agg[sym];
-      if (a) {
-        rows.push([
-          sym,
-          String(a.buyQty - a.sellQty),
-          String(a.tradeCount),
-          a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
-          String(a.buyQty),
-          a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
-          String(a.sellQty),
-        ]);
-      } else {
-        // symbol never appeared in fills → blank metrics
-        rows.push([
-          sym, "", "", "", "", "", "",
-        ]);
-      }
-    }
-
-    invocation.setResult(rows);
-  }, 1_000); // update every second
   invocation.onCanceled = () => clearInterval(intervalId);
 }
+
 
 
 /**

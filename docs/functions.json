@@ -246,7 +246,7 @@
             }
         },
         {
-            "description": "Gets fills analysis for a given account and string of symbols for the current trading day.",
+            "description": "Streams a rolling fills analysis table that refreshes every second.",
             "id": "STREAMFILLSANALYSIS",
             "name": "STREAMFILLSANALYSIS",
             "options": {
@@ -254,18 +254,18 @@
             },
             "parameters": [
                 {
-                    "description": "Account name, gotten from accountList function.",
+                    "description": "Account name (see accountList()).",
                     "name": "accountName",
                     "type": "string"
                 },
                 {
-                    "description": "Market symbols, e.g. [\"ES 20250620 CME Future\", \"NQ 20250620 CME Future\"]",
-                    "dimensionality": "matrix",
+                    "description": "1- or 2-D Excel range of symbols -– leave blank for “all”.",
                     "name": "symbols",
-                    "type": "string"
+                    "optional": true,
+                    "type": "any"
                 },
                 {
-                    "description": "Number of days to look back, default is 1 day.",
+                    "description": "OPTIONAL look-back window; defaults to 1 (today’s trading day).",
                     "name": "number_of_days",
                     "optional": true,
                     "type": "number"
