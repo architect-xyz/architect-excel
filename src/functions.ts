@@ -600,7 +600,7 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
  */
 export function streamFillsAnalysis(
   accountName: string,
-  symbols: string[][] | string,
+  symbols: string[][],
   number_of_days: number,
   invocation: CustomFunctions.StreamingInvocation<string[][]>,
 ): void {

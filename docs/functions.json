@@ -260,9 +260,10 @@
                 },
                 {
                     "description": "1- or 2-D Excel range of symbols -– leave blank for “all”.",
+                    "dimensionality": "matrix",
                     "name": "symbols",
                     "optional": true,
-                    "type": "any"
+                    "type": "string"
                 },
                 {
                     "description": "OPTIONAL look-back window; defaults to 1 (today’s trading day).",
