@@ -247,8 +247,11 @@
         },
         {
             "description": "Gets fills analysis for a given account and string of symbols for the current trading day.",
-            "id": "FILLSANALYSIS",
-            "name": "FILLSANALYSIS",
+            "id": "STREAMFILLSANALYSIS",
+            "name": "STREAMFILLSANALYSIS",
+            "options": {
+                "stream": true
+            },
             "parameters": [
                 {
                     "description": "Account name, gotten from accountList function.",
@@ -260,6 +263,12 @@
                     "dimensionality": "matrix",
                     "name": "symbols",
                     "type": "string"
+                },
+                {
+                    "description": "Number of days to look back, default is 1 day.",
+                    "name": "number_of_days",
+                    "optional": true,
+                    "type": "number"
                 }
             ],
             "result": {

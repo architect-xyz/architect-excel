@@ -593,12 +593,16 @@ export async function searchSymbols(market_name: string): Promise<string [] []> 
  * Gets fills analysis for a given account and string of symbols for the current trading day.
  * @param accountName Account name, gotten from accountList function.
  * @param symbols     Market symbols, e.g. ["ES 20250620 CME Future", "NQ 20250620 CME Future"]
+ * @param invocation Streaming invocation object
+ * @param [number_of_days] Number of days to look back, default is 1 day.
  * @customfunction
  */
-export async function fillsAnalysis(
+export function streamFillsAnalysis(
   accountName: string,
-  symbols: string[][]
-): Promise<string[][]> {
+  symbols: string[][],
+  number_of_days: number,
+  invocation: CustomFunctions.StreamingInvocation<string[][]>,
+): void {
   /* ── 0 . validate input ──────────────────────────────────────────── */
   if (!symbols?.length) {
     throw new CustomFunctions.Error(
@@ -612,94 +616,98 @@ export async function fillsAnalysis(
   const requested = new Set(ordered);                         // O(1) membership tests
   const wantAll   = ordered.length === 0;                     // edge-case: caller asked for "all"
 
-  const fromInclusive = getStartOfTradingDate();
-  const snapshot: HistoricalFillsResponse = await client.historicalFills(
-    [],
-    { account: accountName, fromInclusive: fromInclusive.toISOString() }
-  );
-  const fills = snapshot?.fills ?? [];
+  const intervalId = setInterval(async () => {
 
-  /* ── 2 . aggregate in one pass ───────────────────────────────────── */
-  interface Agg {
-    lastTs: string;
-    tradeCount: number;
-    buyQty: number;   buyPQ: number;
-    sellQty: number;  sellPQ: number;
-  }
-  const agg: Record<string, Agg> = Object.create(null);
-  const seenOrder: string[] = [];          // order-of-first-appearance when wantAll === true
+    const fromInclusive = getStartOfTradingDate(number_of_days).toISOString();
+    const snapshot: HistoricalFillsResponse = await client.historicalFills(
+      [],
+      { account: accountName, fromInclusive}
+    );
+    const fills = snapshot?.fills ?? [];
 
-  for (let i = 0; i < fills.length; ++i) {
-    const f = fills[i];
-    if (!wantAll && !requested.has(f.symbol)) continue;
+    /* ── 2 . aggregate in one pass ───────────────────────────────────── */
+    interface Agg {
+      lastTs: string;
+      tradeCount: number;
+      buyQty: number;   buyPQ: number;
+      sellQty: number;  sellPQ: number;
+    }
+    const agg: Record<string, Agg> = Object.create(null);
+    const seenOrder: string[] = [];          // order-of-first-appearance when wantAll === true
 
-    let a = agg[f.symbol];
-    if (!a) {
-      a = agg[f.symbol] = {
-        lastTs: "",
-        tradeCount: 0,
-        buyQty: 0,  buyPQ: 0,
-        sellQty: 0, sellPQ: 0,
-      };
-      if (wantAll) seenOrder.push(f.symbol);   // remember creation order only when caller said "all"
+    for (let i = 0; i < fills.length; ++i) {
+      const f = fills[i];
+      if (!wantAll && !requested.has(f.symbol)) continue;
+
+      let a = agg[f.symbol];
+      if (!a) {
+        a = agg[f.symbol] = {
+          lastTs: "",
+          tradeCount: 0,
+          buyQty: 0,  buyPQ: 0,
+          sellQty: 0, sellPQ: 0,
+        };
+        if (wantAll) seenOrder.push(f.symbol);   // remember creation order only when caller said "all"
+      }
+
+      ++a.tradeCount;
+
+      const qty   = +f.quantity;
+      if (qty === 0) continue;
+      const price = +f.price;
+
+      if (f.dir === "buy") {
+        a.buyQty += qty;
+        a.buyPQ  += qty * price;
+      } else {
+        a.sellQty += qty;
+        a.sellPQ  += qty * price;
+      }
+
+      const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
+      if (ts && ts > a.lastTs) a.lastTs = ts;
     }
 
-    ++a.tradeCount;
+    /* ── 3 . shape output for Excel in the *correct* order ───────────── */
+    const header = [
+      "Timestamp",
+      "Symbols",
+      "TradePosition",
+      "TradeCount",
+      "AverageBuyPrice",
+      "BuyQuantity",
+      "AverageSellPrice",
+      "SellQuantity",
+    ] as const;
 
-    const qty   = +f.quantity;
-    if (qty === 0) continue;
-    const price = +f.price;
+    const rows: string[][] = [header.slice()];
 
-    if (f.dir === "buy") {
-      a.buyQty += qty;
-      a.buyPQ  += qty * price;
-    } else {
-      a.sellQty += qty;
-      a.sellPQ  += qty * price;
+    const symbolsToEmit = wantAll ? seenOrder : ordered;
+
+    for (const sym of symbolsToEmit) {
+      const a = agg[sym];
+      if (a) {
+        rows.push([
+          a.lastTs,
+          sym,
+          String(a.buyQty - a.sellQty),
+          String(a.tradeCount),
+          a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
+          String(a.buyQty),
+          a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
+          String(a.sellQty),
+        ]);
+      } else {
+        // symbol never appeared in fills → blank metrics
+        rows.push([
+          "", sym, "", "", "", "", "", "",
+        ]);
+      }
     }
 
-    const ts = (f.tradeTime ?? f.recvTime) as string | undefined;
-    if (ts && ts > a.lastTs) a.lastTs = ts;
-  }
-
-  /* ── 3 . shape output for Excel in the *correct* order ───────────── */
-  const header = [
-    "Timestamp",
-    "Symbols",
-    "TradePosition",
-    "TradeCount",
-    "AverageBuyPrice",
-    "BuyQuantity",
-    "AverageSellPrice",
-    "SellQuantity",
-  ] as const;
-
-  const rows: string[][] = [header.slice()];
-
-  const symbolsToEmit = wantAll ? seenOrder : ordered;
-
-  for (const sym of symbolsToEmit) {
-    const a = agg[sym];
-    if (a) {
-      rows.push([
-        a.lastTs,
-        sym,
-        String(a.buyQty - a.sellQty),
-        String(a.tradeCount),
-        a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
-        String(a.buyQty),
-        a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
-        String(a.sellQty),
-      ]);
-    } else {
-      // symbol never appeared in fills → blank metrics
-      rows.push([
-        "", sym, "", "", "", "", "", "",
-      ]);
-    }
-  }
-
-  return rows;
+    invocation.setResult(rows);
+  }, 1_000); // update every second
+  invocation.onCanceled = () => clearInterval(intervalId);
 }
 
 
@@ -712,7 +720,10 @@ export async function fillsAnalysis(
  * • Otherwise it started at 17:00 ET **today**.
  *
  */
-function getStartOfTradingDate(): Date {
+function getStartOfTradingDate(number_of_days_prior?: number): Date {
+  number_of_days_prior = number_of_days_prior ?? 1;
+  number_of_days_prior = Math.trunc(number_of_days_prior);
+
   const now = new Date();
 
   // How far New York time is ahead (+) or behind (–) the local clock *right now*
@@ -720,8 +731,13 @@ function getStartOfTradingDate(): Date {
     new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" })).getTime() -
     now.getTime();
 
+
   // `now` expressed on the New York wall-clock
   const nowNY = new Date(now.getTime() + nyOffsetMs);
+
+  if (number_of_days_prior) {
+    nowNY.setDate(nowNY.getDate() - number_of_days_prior);
+  }
 
   // 17:00 on that New York calendar date
   const startNY = new Date(nowNY);
