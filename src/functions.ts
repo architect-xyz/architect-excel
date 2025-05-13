@@ -735,7 +735,6 @@ function getStartOfTradingDate(): Date {
   if (nowNY < startNY) {
     startNY.setDate(startNY.getDate() - 1);
   }
-  startNY.setDate(startNY.getDate() - 5);
 
   // Convert the New York wall-clock time back to the correct absolute instant
   return new Date(startNY.getTime() - nyOffsetMs);
