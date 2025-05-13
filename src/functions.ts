@@ -599,7 +599,7 @@ export async function fillsAnalysis(
   accountName: string,
   symbols: string[][]
 ): Promise<string[][]> {
-  /* ── 0. validate input ───────────────────────────────────────────── */
+  /* ── 0 . validate input ──────────────────────────────────────────── */
   if (!symbols?.length) {
     throw new CustomFunctions.Error(
       CustomFunctions.ErrorCode.invalidValue,
@@ -607,28 +607,27 @@ export async function fillsAnalysis(
     );
   }
 
-  /* ── 1. normalise symbols & fetch fills ──────────────────────────── */
-  const requested = new Set(normalizeFields(symbols) ?? []);        // unique, O(1) lookup
-  const wantAll   = requested.size === 0;
+  /* ── 1 . normalise symbols & fetch fills ─────────────────────────── */
+  const ordered: string[] = normalizeFields(symbols) ?? [];   // <-- keeps caller order
+  const requested = new Set(ordered);                         // O(1) membership tests
+  const wantAll   = ordered.length === 0;                     // edge-case: caller asked for "all"
 
-  const fromInclusive = getStartOfTradingDate();                    // 17:00 ET previous calendar-day
+  const fromInclusive = getStartOfTradingDate();
   const snapshot: HistoricalFillsResponse = await client.historicalFills(
     [],
     { account: accountName, fromInclusive: fromInclusive.toISOString() }
   );
-
-  console.log("fromInclusive:", fromInclusive.toISOString());
-  console.log("Fills snapshot:", snapshot);
   const fills = snapshot?.fills ?? [];
 
-  /* ── 2. aggregate in one pass ────────────────────────────────────── */
+  /* ── 2 . aggregate in one pass ───────────────────────────────────── */
   interface Agg {
     lastTs: string;
     tradeCount: number;
-    buyQty: number;   buyPQ: number;        // Σ(qty·price) buys
-    sellQty: number;  sellPQ: number;       // Σ(qty·price) sells
+    buyQty: number;   buyPQ: number;
+    sellQty: number;  sellPQ: number;
   }
   const agg: Record<string, Agg> = Object.create(null);
+  const seenOrder: string[] = [];          // order-of-first-appearance when wantAll === true
 
   for (let i = 0; i < fills.length; ++i) {
     const f = fills[i];
@@ -642,12 +641,13 @@ export async function fillsAnalysis(
         buyQty: 0,  buyPQ: 0,
         sellQty: 0, sellPQ: 0,
       };
+      if (wantAll) seenOrder.push(f.symbol);   // remember creation order only when caller said "all"
     }
 
     ++a.tradeCount;
 
-    const qty   = +f.quantity;                           // fast string→number
-    if (qty === 0) continue;                             // ignore odd zero-qty fills
+    const qty   = +f.quantity;
+    if (qty === 0) continue;
     const price = +f.price;
 
     if (f.dir === "buy") {
@@ -662,7 +662,7 @@ export async function fillsAnalysis(
     if (ts && ts > a.lastTs) a.lastTs = ts;
   }
 
-  /* ── 3. shape output for Excel ───────────────────────────────────── */
+  /* ── 3 . shape output for Excel in the *correct* order ───────────── */
   const header = [
     "Timestamp",
     "Symbols",
@@ -676,29 +676,25 @@ export async function fillsAnalysis(
 
   const rows: string[][] = [header.slice()];
 
-  // 3a. rows for symbols that had at least one fill
-  for (const sym in agg) {
-    const a = agg[sym];
-    rows.push([
-      a.lastTs,
-      sym,
-      String(a.buyQty - a.sellQty),
-      String(a.tradeCount),
-      a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
-      String(a.buyQty),
-      a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
-      String(a.sellQty),
-    ]);
-  }
+  const symbolsToEmit = wantAll ? seenOrder : ordered;
 
-  // 3b. rows for requested symbols with *no* fills
-  if (!wantAll) {
-    for (const sym of requested) {
-      if (agg[sym]) continue;                            // already included
+  for (const sym of symbolsToEmit) {
+    const a = agg[sym];
+    if (a) {
       rows.push([
-        "",  // Timestamp
-        sym, // Symbols
-        "", "", "", "", "", "",
+        a.lastTs,
+        sym,
+        String(a.buyQty - a.sellQty),
+        String(a.tradeCount),
+        a.buyQty  ? (a.buyPQ  / a.buyQty ).toFixed(2) : "",
+        String(a.buyQty),
+        a.sellQty ? (a.sellPQ / a.sellQty).toFixed(2) : "",
+        String(a.sellQty),
+      ]);
+    } else {
+      // symbol never appeared in fills → blank metrics
+      rows.push([
+        "", sym, "", "", "", "", "", "",
       ]);
     }
   }
